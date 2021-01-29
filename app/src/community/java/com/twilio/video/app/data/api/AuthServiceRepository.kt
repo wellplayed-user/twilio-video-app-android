@@ -51,8 +51,13 @@ class AuthServiceRepository(
         getPasscode(passcode)?.let { passcode ->
             val (requestBody, url) = buildRequest(passcode, identity, roomName)
 
+            // Production URL
+            val orcanaUrl = "https://app.orcana.io/api/v1/token";
+            // Dev URL
+            // val orcanaUrl = "https://staging.app.orcana.io/api/v1/token";
+
             try {
-                authService.getToken(url, requestBody).let { response ->
+                authService.getToken(orcanaUrl, requestBody).let { response ->
                     return handleResponse(response)
                             ?: throw AuthServiceException(message = "Token cannot be null")
                 }
