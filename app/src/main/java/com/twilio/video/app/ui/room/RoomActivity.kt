@@ -85,6 +85,7 @@ import com.twilio.video.app.ui.room.RoomViewModel.RoomViewModelFactory
 import com.twilio.video.app.ui.settings.SettingsActivity
 import com.twilio.video.app.util.InputUtils
 import com.twilio.video.app.util.PermissionUtil
+import io.orcana.OTWrapper
 import io.uniflow.androidx.flow.onEvents
 import io.uniflow.androidx.flow.onStates
 import javax.inject.Inject
@@ -153,7 +154,13 @@ class RoomActivity : BaseActivity() {
         primaryParticipantController = PrimaryParticipantController(binding.room.primaryVideo)
 
         setupRecordingAnimation()
+
+        // Orcana Addition
+        orcana = OTWrapper(this, binding)
     }
+
+    // Orcana addition
+    private lateinit var orcana: OTWrapper
 
     override fun onDestroy() {
         super.onDestroy()
