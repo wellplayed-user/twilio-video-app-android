@@ -119,7 +119,7 @@ class RoomActivity : BaseActivity() {
     /** Coordinates participant thumbs and primary participant rendering.  */
     private lateinit var primaryParticipantController: PrimaryParticipantController
     private lateinit var participantAdapter: ParticipantAdapter
-    private lateinit var roomViewModel: RoomViewModel
+    public lateinit var roomViewModel: RoomViewModel
     private lateinit var recordingAnimation: ObjectAnimator
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -163,6 +163,8 @@ class RoomActivity : BaseActivity() {
     private lateinit var orcana: OTWrapper
 
     override fun onDestroy() {
+        this.orcana.onDestroy()
+
         super.onDestroy()
         recordingAnimation.cancel()
     }

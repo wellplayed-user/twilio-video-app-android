@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Video Community</string>
+    <string name="app_name">Orcana</string>
 
     <!--  Login Screen  -->
     <string name="login_screen_name">Your name</string>
-    <string name="login_screen_passcode">Passcode</string>
+    <string name="login_screen_passcode">Rep ID</string>
     <string name="login_screen_error_title">Log In Error</string>
     <string name="login_screen_invalid_passcode_error">Passcode incorrect.</string>
     <string name="login_screen_expired_passcode_error">Passcode expired.</string>
+
+    <!--  Orcana  -->
+    <string name="default_user_name">AR Glasses</string>
+    <string name="default_room_name">orcanadefault</string>
+    <string name="login_screen_caseid">Case ID</string>
+    <string name="passcode">25048049744075</string>
+    <string name="screenshot">Screenshot View</string>
+    <string name="mute">mute</string>
+    <string name="min">min</string>
+    <string name="mid">mid</string>
+    <string name="loud">loud</string>
+    <string name="max">max</string>
 </resources>

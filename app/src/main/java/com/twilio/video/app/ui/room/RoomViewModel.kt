@@ -64,6 +64,7 @@ import com.twilio.video.app.ui.room.RoomViewEvent.ToggleLocalAudio
 import com.twilio.video.app.ui.room.RoomViewEvent.ToggleLocalVideo
 import com.twilio.video.app.ui.room.RoomViewEvent.VideoTrackRemoved
 import com.twilio.video.app.util.PermissionUtil
+import io.orcana.DataTrackLayer
 import io.uniflow.androidx.flow.AndroidDataFlow
 import io.uniflow.core.flow.actionOn
 import io.uniflow.core.flow.data.UIState
@@ -182,6 +183,8 @@ class RoomViewModel(
         }
     }
 
+    lateinit var dataTrackLayer:DataTrackLayer
+
     private fun observeRoomEvents(roomEvent: RoomEvent) {
         Timber.d("observeRoomEvents: %s", roomEvent)
         when (roomEvent) {
@@ -192,8 +195,12 @@ class RoomViewModel(
                 showConnectedViewState(roomEvent.roomName)
                 checkParticipants(roomEvent.participants)
                 action { sendEvent { RoomViewEffect.Connected(roomEvent.room) } }
+                dataTrackLayer.connected(roomEvent)
             }
-            is Disconnected -> showLobbyViewState()
+            is Disconnected -> {
+                showLobbyViewState()
+                dataTrackLayer.disconnected(roomEvent)
+            }
             is DominantSpeakerChanged -> {
                 participantManager.changeDominantSpeaker(roomEvent.newDominantSpeakerSid)
                 updateParticipantViewState()
@@ -224,7 +231,10 @@ class RoomViewModel(
 
     private fun handleRemoteParticipantEvent(remoteParticipantEvent: RemoteParticipantEvent) {
         when (remoteParticipantEvent) {
-            is RemoteParticipantConnected -> addParticipant(remoteParticipantEvent.participant)
+            is RemoteParticipantConnected -> {
+                addParticipant(remoteParticipantEvent.participant)
+                dataTrackLayer.remoteParticipantConnected(remoteParticipantEvent)
+            }
             is VideoTrackUpdated -> {
                 participantManager.updateParticipantVideoTrack(remoteParticipantEvent.sid,
                         remoteParticipantEvent.videoTrack?.let { VideoTrackViewState(it) })
@@ -254,7 +264,9 @@ class RoomViewModel(
             is RemoteParticipantDisconnected -> {
                 participantManager.removeParticipant(remoteParticipantEvent.sid)
                 updateParticipantViewState()
+                dataTrackLayer.remoteParticipantDisconnected(remoteParticipantEvent)
             }
+            is RemoteParticipantEvent.OnDataTrackSubscribed -> dataTrackLayer.onDataTrackSubscribed(remoteParticipantEvent)
         }
     }
 

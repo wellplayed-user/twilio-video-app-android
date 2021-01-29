@@ -1,9 +1,6 @@
 package com.twilio.video.app.ui.room
 
-import com.twilio.video.NetworkQualityLevel
-import com.twilio.video.Participant
-import com.twilio.video.Room
-import com.twilio.video.VideoTrack
+import com.twilio.video.*
 import com.twilio.video.app.data.api.AuthServiceError
 import com.twilio.video.app.sdk.RoomStats
 
@@ -29,6 +26,11 @@ sealed class RoomEvent {
         data class RemoteParticipantConnected(val participant: Participant) : RemoteParticipantEvent()
         data class VideoTrackUpdated(val sid: String, val videoTrack: VideoTrack?) : RemoteParticipantEvent()
         data class TrackSwitchOff(val sid: String, val videoTrack: VideoTrack, val switchOff: Boolean) : RemoteParticipantEvent()
+        data class OnDataTrackSubscribed(
+            val remoteParticipant: RemoteParticipant,
+            val remoteDataTrackPublication: RemoteDataTrackPublication,
+            val remoteDataTrack: RemoteDataTrack
+        ) : RemoteParticipantEvent()
         data class ScreenTrackUpdated(
             val sid: String,
             val screenTrack: VideoTrack?

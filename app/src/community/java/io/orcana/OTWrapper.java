@@ -19,6 +19,8 @@ public class OTWrapper implements MotionMenu {
     private boolean mute = true;
     private final MenuController menuController;
 
+    private final DataTrackLayer dataTrackLayer;
+
     public OTWrapper(RoomActivity activity, RoomActivityBinding binding) {
         this.roomActivity = activity;
         this.binding = binding;
@@ -45,6 +47,8 @@ public class OTWrapper implements MotionMenu {
 
         this.menuController = new MenuController(roomActivity, this);
         setupUI();
+
+        dataTrackLayer = new DataTrackLayer(roomActivity, binding);
     }
 
     public void onResume() {
@@ -53,6 +57,10 @@ public class OTWrapper implements MotionMenu {
 
     public void onPause() {
         this.menuController.onPause();
+    }
+
+    public void onDestroy() {
+        this.dataTrackLayer.onDestroy();
     }
 
     private void setupUI(){
