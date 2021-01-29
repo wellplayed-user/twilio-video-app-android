@@ -177,11 +177,15 @@ class RoomActivity : BaseActivity() {
         displayName = sharedPreferences.getString(Preferences.DISPLAY_NAME, null)
         setTitle(displayName)
         roomViewModel.processInput(OnResume)
+
+        this.orcana.onResume()
     }
 
     override fun onPause() {
         super.onPause()
         roomViewModel.processInput(OnPause)
+
+        this.orcana.onPause()
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {

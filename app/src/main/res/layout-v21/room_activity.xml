@@ -14,6 +14,11 @@
 
         <include android:id="@+id/room" layout="@layout/content_room" />
 
+        <io.orcana.CursorView
+            android:id="@+id/cursorView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/lobby_toolbar"
             android:layout_width="match_parent"
@@ -191,4 +196,11 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <View
+        android:id="@+id/blackView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:visibility="invisible" />
 </androidx.drawerlayout.widget.DrawerLayout>
