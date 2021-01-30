@@ -2,6 +2,7 @@ package io.orcana;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.twilio.video.RemoteDataTrack;
@@ -26,11 +27,13 @@ import timber.log.Timber;
 public class DataTrackLayer {
     private static final String DATA_TRACK_MESSAGE_THREAD_NAME = "DataTrackMessages";
 
-    ImageView screenshotView;
-    AnnotationView annotationView;
-
     private Room room;
-    private RoomManager roomManager;
+    private final RoomManager roomManager;
+    private final RoomActivity roomActivity;
+
+    private final RoomActivityBinding binding;
+    private final ImageView screenshotView;
+    private final AnnotationView annotationView;
 
     // Dedicated thread and handler for messages received from a RemoteDataTrack
     private final HandlerThread dataTrackMessageThread =
@@ -42,10 +45,13 @@ public class DataTrackLayer {
 //            new HashMap<>();
 
     public DataTrackLayer(RoomActivity roomActivity, RoomActivityBinding binding) {
-        annotationView = binding.annotationView;
-        screenshotView = binding.screenshotView;
-
+        this.roomActivity = roomActivity;
         this.roomManager = roomActivity.getRoomManager();
+        
+        this.binding = binding;
+        this.annotationView = binding.annotationView;
+        this.screenshotView = binding.screenshotView;
+
         roomActivity.getRoomViewModel().setDataTrackLayer(this);
         // Start the thread where data messages are received
         dataTrackMessageThread.start();
@@ -153,7 +159,7 @@ public class DataTrackLayer {
         };
     }
 
-    public static void parserJson(String json, AnnotationView annotationView, ImageView screenShotView) {
+    private void parserJson(String json, AnnotationView annotationView, ImageView screenShotView) {
         try {
             JSONObject annotationWrapperJsonObject = new JSONObject(json);
             String annotationAction = annotationWrapperJsonObject.getString("type");
@@ -178,7 +184,23 @@ public class DataTrackLayer {
                     JSONObject updateScreenshotJsonObject = annotationWrapperJsonObject.getJSONObject("screenshot");
                     annotationView.handleScreenshot(updateScreenshotJsonObject, screenShotView);
                     break;
-
+                case "ADMIN":
+                    String identity = annotationWrapperJsonObject.getString("identity");
+                    Timber.d("Identity: %s", room.getLocalParticipant().getIdentity());
+                    if(identity.equals(room.getLocalParticipant().getIdentity())){
+                        switch (annotationWrapperJsonObject.getString("action")){
+                            case "mute":
+                                this.roomActivity.runOnUiThread(this.binding.localAudio::performClick);
+                                break;
+                            case "disable":
+                                this.roomActivity.runOnUiThread(this.binding.localVideo::performClick);
+                                break;
+                            case "kick":
+                                this.roomActivity.runOnUiThread(this.binding.disconnectO::performClick);
+                                break;
+                        }
+                    }
+                    break;
             }
         } catch (JSONException e) {
             Timber.e(e);
