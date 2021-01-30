@@ -27,11 +27,10 @@
             android:id="@+id/login"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimaryDark"
+            android:background="@color/aquaBlue"
             android:text="@string/login"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/colorButtonText"
-            android:enabled="false"
+            android:textColor="@color/orcanaBlack"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -55,7 +54,7 @@
                 android:layout_height="74dp"
                 android:layout_gravity="center_horizontal"
                 android:contentDescription="@string/video_logo"
-                android:src="@drawable/video_logo_splash" />
+                android:src="@drawable/orcana_logo_clear" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -65,15 +64,20 @@
                 android:layout_marginTop="@dimen/username_margin_top"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin">
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:background="@color/colorPrimary"
+                android:textColorHint="@color/orcanaBlack">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name"
-                    android:autofillHints="username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="username"
+                    android:backgroundTint="@color/orcanaBlack"
                     android:hint="@string/login_screen_name"
-                    android:inputType="textPersonName"/>
+                    android:inputType="textPersonName"
+                    android:text="@string/default_user_name"
+                    android:textColor="@color/orcanaBlack" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -86,6 +90,8 @@
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:background="@color/colorPrimary"
+                android:textColorHint="@color/orcanaBlack"
                 app:errorTextAppearance="@style/ErrorTextAppearance">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -93,8 +99,35 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints="password"
+                    android:backgroundTint="@color/orcanaBlack"
                     android:hint="@string/login_screen_passcode"
-                    android:inputType="numberPassword"/>
+                    android:inputType="number"
+                    android:text="@string/passcode"
+                    android:textColor="@color/orcanaBlack" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:background="@color/colorPrimary"
+                android:textColorHint="@color/orcanaBlack"
+                app:errorTextAppearance="@style/ErrorTextAppearance">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/case_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/orcanaBlack"
+                    android:hint="@string/login_screen_caseid"
+                    android:inputType="textVisiblePassword"
+                    android:text="@string/default_room_name"
+                    android:textColor="@color/orcanaBlack" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

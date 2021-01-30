@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#cc2b33</color>
-    <color name="colorPrimaryDark">#a52229</color>
+    <color name="colorPrimary">#E3EDF1</color>
+    <color name="aquaBlue">#80DBFF</color>
+    <color name="cream">#FFEFE0</color>
+    <color name="orcanaBlack">#80000000</color>
+    <color name="colorPrimaryDark">#7F8587</color>
+
     <color name="colorAccent">#b0bec5</color>
     <color name="colorButtonText">#80fffffe</color>
     <color name="textColorPrimary">#de000000</color>

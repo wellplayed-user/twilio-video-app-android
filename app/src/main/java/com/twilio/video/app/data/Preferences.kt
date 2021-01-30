@@ -28,6 +28,7 @@ object Preferences {
     const val SERVER_DEFAULT = "Server Default"
     const val EMAIL = "pref_email"
     const val DISPLAY_NAME = "pref_display_name"
+    const val CASE_ID = "pref_case_id"
     const val ENVIRONMENT = "pref_environment"
     const val ENVIRONMENT_DEFAULT = BuildConfig.ENVIRONMENT_DEFAULT
     const val TOPOLOGY = "pref_topology"

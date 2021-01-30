@@ -19,6 +19,8 @@ package com.twilio.video.app.ui.login;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -65,9 +67,14 @@ public class CommunityLoginActivity extends BaseActivity {
         binding = CommunityLoginActivityBinding.inflate(getLayoutInflater());
         binding.name.addTextChangedListener(textWatcher);
         binding.passcode.addTextChangedListener(textWatcher);
+        binding.caseId.addTextChangedListener(textWatcher);
         binding.login.setOnClickListener(this::loginClicked);
         setContentView(binding.getRoot());
+
         if (authenticator.loggedIn()) startLobbyActivity();
+
+//        final Handler handler = new Handler(Looper.getMainLooper());
+//        handler.postDelayed(() -> loginClicked(null), 3000);
     }
 
     private void passcodeChanged(Editable editable) {
@@ -77,15 +84,16 @@ public class CommunityLoginActivity extends BaseActivity {
     private void loginClicked(View view) {
         String identity = binding.name.getText().toString();
         String passcode = binding.passcode.getText().toString();
-        login(identity, passcode);
+        String caseID = binding.caseId.getText().toString();
+        login(identity, passcode, caseID);
     }
 
-    private void login(String identity, String passcode) {
+    private void login(String identity, String passcode, String caseID) {
         preLoginViewState();
 
         disposable.add(
                 authenticator
-                        .login(new CommunityLoginEvent(identity, passcode))
+                        .login(new CommunityLoginEvent(identity, passcode, caseID))
                         .observeOn(AndroidSchedulers.mainThread())
                         .doFinally(this::postLoginViewState)
                         .subscribe(
@@ -139,11 +147,14 @@ public class CommunityLoginActivity extends BaseActivity {
     private boolean isInputValid() {
         Editable nameEditable = binding.name.getText();
         Editable passcodeEditable = binding.passcode.getText();
+        Editable caseIDEditable = binding.caseId.getText();
 
         if (nameEditable != null
                 && passcodeEditable != null
+                && caseIDEditable != null
                 && !nameEditable.toString().isEmpty()
-                && !passcodeEditable.toString().isEmpty()) {
+                && !passcodeEditable.toString().isEmpty()
+                && !caseIDEditable.toString().isEmpty()) {
             return true;
         }
         return false;

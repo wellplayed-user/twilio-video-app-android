@@ -16,11 +16,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/remote_video_thumbnails"
-        android:scrollbars="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
-        android:layout_margin="8dp">
+        android:layout_margin="8dp"
+        android:scrollbars="horizontal"
+        android:visibility="gone">
 
     </androidx.recyclerview.widget.RecyclerView>
 

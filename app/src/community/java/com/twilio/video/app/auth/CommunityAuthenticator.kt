@@ -21,6 +21,7 @@ import androidx.core.content.edit
 import com.twilio.video.app.auth.CommunityLoginResult.CommunityLoginFailureResult
 import com.twilio.video.app.auth.CommunityLoginResult.CommunityLoginSuccessResult
 import com.twilio.video.app.data.PASSCODE
+import com.twilio.video.app.data.Preferences.CASE_ID
 import com.twilio.video.app.data.Preferences.DISPLAY_NAME
 import com.twilio.video.app.data.api.AuthServiceException
 import com.twilio.video.app.data.api.TokenService
@@ -46,9 +47,12 @@ class CommunityAuthenticator constructor(
         return rxSingle(coroutineContext) {
             if (loginEvent is LoginEvent.CommunityLoginEvent) {
                 try {
-                    tokenService.getToken(identity = loginEvent.identity, passcode = loginEvent.passcode)
+                    tokenService.getToken(identity = loginEvent.identity,
+                                            passcode = loginEvent.passcode,
+                                            roomName = loginEvent.caseID)
 
                     sharedPreferences.edit { putString(DISPLAY_NAME, loginEvent.identity) }
+                    sharedPreferences.edit { putString(CASE_ID, loginEvent.caseID) }
                     securePreferences.putSecureString(PASSCODE, loginEvent.passcode)
 
                     CommunityLoginSuccessResult

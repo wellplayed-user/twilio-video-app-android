@@ -40,6 +40,7 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -50,6 +51,7 @@ import com.twilio.audioswitch.AudioDevice.WiredHeadset
 import com.twilio.audioswitch.AudioSwitch
 import com.twilio.video.app.R
 import com.twilio.video.app.adapter.StatsListAdapter
+import com.twilio.video.app.auth.Authenticator
 import com.twilio.video.app.base.BaseActivity
 import com.twilio.video.app.data.Preferences
 import com.twilio.video.app.data.api.AuthServiceError
@@ -57,6 +59,7 @@ import com.twilio.video.app.data.api.TokenService
 import com.twilio.video.app.databinding.RoomActivityBinding
 import com.twilio.video.app.participant.ParticipantViewState
 import com.twilio.video.app.sdk.RoomManager
+import com.twilio.video.app.ui.login.CommunityLoginActivity
 import com.twilio.video.app.ui.room.RoomViewConfiguration.Connecting
 import com.twilio.video.app.ui.room.RoomViewConfiguration.Lobby
 import com.twilio.video.app.ui.room.RoomViewEffect.Connected
@@ -156,11 +159,27 @@ class RoomActivity : BaseActivity() {
         setupRecordingAnimation()
 
         // Orcana Addition
-        orcana = OTWrapper(this, binding)
+        orcana = OTWrapper(this, binding, sharedPreferences)
     }
 
     // Orcana addition
+    @Inject
+    lateinit var authenticator: Authenticator
     private lateinit var orcana: OTWrapper
+
+    fun logout() {
+        val loginIntent = Intent(this@RoomActivity, CommunityLoginActivity::class.java)
+
+        // Clear all preferences and set defaults
+        sharedPreferences.edit().clear().apply()
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, true)
+
+        // Return to login activity
+        loginIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        authenticator.logout()
+        startActivity(loginIntent)
+        finishAffinity()
+    }
 
     override fun onDestroy() {
         this.orcana.onDestroy()
@@ -368,7 +387,10 @@ class RoomActivity : BaseActivity() {
     }
 
     private fun updateLayout(roomViewState: RoomViewState) {
-        var disconnectButtonState = View.GONE
+        var joinLogoutOButtonState = View.VISIBLE
+        var disconnectOButtonState = View.GONE
+
+//        var disconnectButtonState = View.GONE
         var joinRoomLayoutState = View.VISIBLE
         var joinStatusLayoutState = View.GONE
         var settingsMenuItemState = true
@@ -382,10 +404,13 @@ class RoomActivity : BaseActivity() {
         var recordingWarningVisibility = View.GONE
         when (roomViewState.configuration) {
             Connecting -> {
-                disconnectButtonState = View.VISIBLE
+                joinLogoutOButtonState = View.GONE
+                disconnectOButtonState = View.VISIBLE
+
+//                disconnectButtonState = View.VISIBLE
                 joinRoomLayoutState = View.GONE
                 joinStatusLayoutState = View.VISIBLE
-                recordingWarningVisibility = View.VISIBLE
+                recordingWarningVisibility = View.GONE
                 settingsMenuItemState = false
                 connectButtonEnabled = false
                 if (roomEditable != null) {
@@ -394,7 +419,10 @@ class RoomActivity : BaseActivity() {
                 joinStatus = "Joining..."
             }
             RoomViewConfiguration.Connected -> {
-                disconnectButtonState = View.VISIBLE
+                joinLogoutOButtonState = View.GONE
+                disconnectOButtonState = View.VISIBLE
+
+//                disconnectButtonState = View.VISIBLE
                 joinRoomLayoutState = View.GONE
                 joinStatusLayoutState = View.GONE
                 settingsMenuItemState = false
@@ -407,6 +435,9 @@ class RoomActivity : BaseActivity() {
                         if (roomViewState.isRecording) View.VISIBLE else View.GONE
             }
             Lobby -> {
+                joinLogoutOButtonState = View.VISIBLE
+                disconnectOButtonState = View.GONE
+
                 connectButtonEnabled = isRoomTextNotEmpty
                 screenCaptureMenuItemState = false
                 binding.recordingIndicator.visibility = View.GONE
@@ -424,7 +455,10 @@ class RoomActivity : BaseActivity() {
         statsListAdapter = StatsListAdapter(this)
         binding.statsRecyclerView.adapter = statsListAdapter
         binding.statsRecyclerView.layoutManager = LinearLayoutManager(this)
-        binding.disconnect.visibility = disconnectButtonState
+
+        this.orcana.updateUI(joinLogoutOButtonState, disconnectOButtonState);
+//        binding.disconnect.visibility = disconnectButtonState
+
         binding.joinRoom.joinRoomLayout.visibility = joinRoomLayoutState
         binding.joinStatusLayout.visibility = joinStatusLayoutState
         binding.joinRoom.connect.isEnabled = connectButtonEnabled
