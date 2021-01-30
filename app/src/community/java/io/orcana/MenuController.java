@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import timber.log.Timber;
 
 public class MenuController implements SensorEventListener, ButtonManager {
-    static final float margin = 1.0f;
+    static final float margin = 2.0f;
 
     private final MotionMenu menu;
     private final Sensor gyroSensor;

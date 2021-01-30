@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.Display;
@@ -23,7 +22,7 @@ import android.view.WindowMetrics;
 
 public class CursorView extends View implements SensorEventListener {
     static final double clickWait = 500.0d; // In milliseconds
-    static final double pixPerRad = 750.0d;
+    static final double pixPerRad = 1000.0d;
 
     public static final double nanoToSec = 1.0E-9d;
     public static final double timeOffset = 1.0d;
