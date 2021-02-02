@@ -10,15 +10,14 @@ import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.RectF;
-import android.util.AttributeSet;
-import android.view.Display;
-import android.view.View;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.AttributeSet;
+import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
-import android.view.WindowMetrics;
 
 public class CursorView extends View implements SensorEventListener {
     static final double clickWait = 500.0d; // In milliseconds
@@ -179,13 +178,13 @@ public class CursorView extends View implements SensorEventListener {
             double dt = currentTimeStamp - this.lastUpdate;
             this.lastUpdate = currentTimeStamp;
             if (dt <= 0.3d) {
-                double xD = (double) this.x;
-                double axisY = ((double) sensorEvent.values[1]);
+                double xD = this.x;
+                double axisY = sensorEvent.values[1];
                 float newX = (float) (xD - ((axisY * dt) * pixPerRad));
                 newX = clip(newX, this.WIDTH);
 
-                double yD = (double) this.y;
-                double axisX = ((double) sensorEvent.values[0]);
+                double yD = this.y;
+                double axisX = sensorEvent.values[0];
                 float newY = (float) (yD - ((axisX * dt) * pixPerRad));
                 newY = clip(newY, this.HEIGHT);
 

@@ -96,12 +96,12 @@ import timber.log.Timber
 
 class RoomActivity : BaseActivity() {
     private lateinit var binding: RoomActivityBinding
-    private lateinit var switchCameraMenuItem: MenuItem
-    private lateinit var pauseVideoMenuItem: MenuItem
-    private lateinit var pauseAudioMenuItem: MenuItem
-    private lateinit var screenCaptureMenuItem: MenuItem
-    private lateinit var settingsMenuItem: MenuItem
-    private lateinit var deviceMenuItem: MenuItem
+//    private lateinit var switchCameraMenuItem: MenuItem
+//    private lateinit var pauseVideoMenuItem: MenuItem
+//    private lateinit var pauseAudioMenuItem: MenuItem
+//    private lateinit var screenCaptureMenuItem: MenuItem
+//    private lateinit var settingsMenuItem: MenuItem
+//    private lateinit var deviceMenuItem: MenuItem
     private var savedVolumeControlStream = 0
     private var displayName: String? = null
     private var localParticipantSid = LOCAL_PARTICIPANT_STUB_SID
@@ -122,7 +122,7 @@ class RoomActivity : BaseActivity() {
     /** Coordinates participant thumbs and primary participant rendering.  */
     private lateinit var primaryParticipantController: PrimaryParticipantController
     private lateinit var participantAdapter: ParticipantAdapter
-    public lateinit var roomViewModel: RoomViewModel
+    lateinit var roomViewModel: RoomViewModel
     private lateinit var recordingAnimation: ObjectAnimator
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -228,15 +228,15 @@ class RoomActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.room_menu, menu)
-        settingsMenuItem = menu.findItem(R.id.settings_menu_item)
-        // Grab menu items for updating later
-        switchCameraMenuItem = menu.findItem(R.id.switch_camera_menu_item)
-        pauseVideoMenuItem = menu.findItem(R.id.pause_video_menu_item)
-        pauseAudioMenuItem = menu.findItem(R.id.pause_audio_menu_item)
-        screenCaptureMenuItem = menu.findItem(R.id.share_screen_menu_item)
-        deviceMenuItem = menu.findItem(R.id.device_menu_item)
+//        val inflater = menuInflater
+//        inflater.inflate(R.menu.room_menu, menu)
+//        settingsMenuItem = menu.findItem(R.id.settings_menu_item)
+//        // Grab menu items for updating later
+//        switchCameraMenuItem = menu.findItem(R.id.switch_camera_menu_item)
+//        pauseVideoMenuItem = menu.findItem(R.id.pause_video_menu_item)
+//        pauseAudioMenuItem = menu.findItem(R.id.pause_audio_menu_item)
+//        screenCaptureMenuItem = menu.findItem(R.id.share_screen_menu_item)
+//        deviceMenuItem = menu.findItem(R.id.device_menu_item)
 
         onStates(roomViewModel) { state ->
             if (state is RoomViewState) bindRoomViewState(state)
@@ -456,7 +456,7 @@ class RoomActivity : BaseActivity() {
         binding.statsRecyclerView.adapter = statsListAdapter
         binding.statsRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        this.orcana.updateUI(joinLogoutOButtonState, disconnectOButtonState);
+        this.orcana.updateUI(joinLogoutOButtonState, disconnectOButtonState)
 //        binding.disconnect.visibility = disconnectButtonState
 
         binding.joinRoom.joinRoomLayout.visibility = joinRoomLayoutState
@@ -468,22 +468,22 @@ class RoomActivity : BaseActivity() {
         binding.recordingNotice.visibility = recordingWarningVisibility
         val pauseAudioTitle = getString(if (roomViewState.isAudioEnabled) R.string.pause_audio else R.string.resume_audio)
         val pauseVideoTitle = getString(if (roomViewState.isVideoEnabled) R.string.pause_video else R.string.resume_video)
-        pauseAudioMenuItem.title = pauseAudioTitle
-        pauseVideoMenuItem.title = pauseVideoTitle
+//        pauseAudioMenuItem.title = pauseAudioTitle
+//        pauseVideoMenuItem.title = pauseVideoTitle
 
         // TODO: Remove when we use a Service to obtainTokenAndConnect to a room
-        settingsMenuItem.isVisible = settingsMenuItemState
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            screenCaptureMenuItem.isVisible = screenCaptureMenuItemState
-            val screenCaptureResources = if (roomViewState.isScreenCaptureOn) {
-                R.drawable.ic_stop_screen_share_white_24dp to getString(R.string.stop_screen_share)
-            } else {
-                R.drawable.ic_screen_share_white_24dp to getString(R.string.share_screen)
-            }
-            screenCaptureMenuItem.icon = ContextCompat.getDrawable(this,
-                    screenCaptureResources.first)
-            screenCaptureMenuItem.title = screenCaptureResources.second
-        }
+//        settingsMenuItem.isVisible = settingsMenuItemState
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            screenCaptureMenuItem.isVisible = screenCaptureMenuItemState
+//            val screenCaptureResources = if (roomViewState.isScreenCaptureOn) {
+//                R.drawable.ic_stop_screen_share_white_24dp to getString(R.string.stop_screen_share)
+//            } else {
+//                R.drawable.ic_screen_share_white_24dp to getString(R.string.share_screen)
+//            }
+//            screenCaptureMenuItem.icon = ContextCompat.getDrawable(this,
+//                    screenCaptureResources.first)
+//            screenCaptureMenuItem.title = screenCaptureResources.second
+//        }
     }
 
     private fun setTitle(toolbarTitle: String?) {
@@ -557,7 +557,7 @@ class RoomActivity : BaseActivity() {
     }
 
     private fun bindRoomViewState(roomViewState: RoomViewState) {
-        deviceMenuItem.isVisible = roomViewState.availableAudioDevices?.isNotEmpty() ?: false
+//        deviceMenuItem.isVisible = roomViewState.availableAudioDevices?.isNotEmpty() ?: false
         renderPrimaryView(roomViewState.primaryParticipant)
         renderThumbnails(roomViewState)
         updateLayout(roomViewState)
@@ -600,13 +600,13 @@ class RoomActivity : BaseActivity() {
             )
 
     private fun updateAudioDeviceIcon(selectedAudioDevice: AudioDevice?) {
-        val audioDeviceMenuIcon = when (selectedAudioDevice) {
-            is BluetoothHeadset -> R.drawable.ic_bluetooth_white_24dp
-            is WiredHeadset -> R.drawable.ic_headset_mic_white_24dp
-            is Speakerphone -> R.drawable.ic_volume_up_white_24dp
-            else -> R.drawable.ic_phonelink_ring_white_24dp
-        }
-        this.deviceMenuItem.setIcon(audioDeviceMenuIcon)
+//        val audioDeviceMenuIcon = when (selectedAudioDevice) {
+//            is BluetoothHeadset -> R.drawable.ic_bluetooth_white_24dp
+//            is WiredHeadset -> R.drawable.ic_headset_mic_white_24dp
+//            is Speakerphone -> R.drawable.ic_volume_up_white_24dp
+//            else -> R.drawable.ic_phonelink_ring_white_24dp
+//        }
+//        this.deviceMenuItem.setIcon(audioDeviceMenuIcon)
     }
 
     private fun renderPrimaryView(primaryParticipant: ParticipantViewState) {
