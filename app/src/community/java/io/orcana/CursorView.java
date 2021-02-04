@@ -19,6 +19,10 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
+import androidx.core.content.res.ResourcesCompat;
+
+import com.twilio.video.app.R;
+
 public class CursorView extends View implements SensorEventListener {
     static final double clickWait = 500.0d; // In milliseconds
     static final double pixPerRad = 1000.0d;
@@ -96,10 +100,11 @@ public class CursorView extends View implements SensorEventListener {
         this.circlePaint.setStyle(Style.STROKE);
         this.circlePaint.setStrokeWidth(5.0f);
         this.circlePaint.setStrokeCap(Cap.ROUND);
-        this.circlePaint.setColor(Color.parseColor("#E3EDF1"));
+
+        this.circlePaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
 
         this.innerCirclePaint.setStyle(Style.FILL);
-        this.innerCirclePaint.setColor(Color.parseColor("#80DBFF"));
+        this.innerCirclePaint.setColor(ResourcesCompat.getColor(getResources(), R.color.aquaBlue, null));
 //        hide();
 //        show();
     }

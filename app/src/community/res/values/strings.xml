@@ -11,7 +11,8 @@
 
     <!--  Orcana  -->
     <string name="default_user_name">AR Glasses</string>
-    <string name="default_room_name">orcanadefault</string>
+<!--    <string name="default_room_name">xmosd</string>-->
+    <string name="default_room_name"></string>
     <string name="login_screen_caseid">Case ID</string>
     <string name="passcode">25048049744075</string>
     <string name="screenshot">Screenshot View</string>

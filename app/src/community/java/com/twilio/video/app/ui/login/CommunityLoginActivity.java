@@ -18,12 +18,17 @@ package com.twilio.video.app.ui.login;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
+
 import androidx.core.content.res.ResourcesCompat;
 import com.twilio.video.app.R;
 import com.twilio.video.app.auth.Authenticator;
@@ -72,6 +77,19 @@ public class CommunityLoginActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         if (authenticator.loggedIn()) startLobbyActivity();
+
+        // Hide the status bar.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            final WindowInsetsController insetsController = getWindow().getInsetsController();
+            if (insetsController != null) {
+                insetsController.hide(WindowInsets.Type.statusBars());
+            }
+        } else {
+            getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+            );
+        }
 
 //        final Handler handler = new Handler(Looper.getMainLooper());
 //        handler.postDelayed(() -> loginClicked(null), 3000);
@@ -162,11 +180,10 @@ public class CommunityLoginActivity extends BaseActivity {
 
     private void enableLoginButton(boolean isEnabled) {
         if (isEnabled) {
-            binding.login.setTextColor(Color.WHITE);
+            binding.login.setTextColor(ResourcesCompat.getColor(getResources(), R.color.orcanaBlack, null));
             binding.login.setEnabled(true);
         } else {
-            binding.login.setTextColor(
-                    ResourcesCompat.getColor(getResources(), R.color.colorButtonText, null));
+            binding.login.setTextColor(ResourcesCompat.getColor(getResources(), R.color.cream, null));
             binding.login.setEnabled(false);
         }
     }
