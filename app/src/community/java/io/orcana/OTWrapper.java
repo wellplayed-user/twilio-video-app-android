@@ -12,6 +12,9 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
 
+import com.twilio.video.RemoteAudioTrack;
+import com.twilio.video.RemoteAudioTrackPublication;
+import com.twilio.video.RemoteParticipant;
 import com.twilio.video.Room;
 import com.twilio.video.app.R;
 import com.twilio.video.app.data.Preferences;
@@ -153,6 +156,19 @@ public class OTWrapper implements MotionMenu {
         }
     }
 
+    void toggleRemoteAudioTrackPlayback(boolean b){
+        Room r = roomActivity.getRoomManager().getRoom();
+        if(r != null){
+            for (RemoteParticipant rp : r.getRemoteParticipants()) {
+                for (RemoteAudioTrackPublication ratp : rp.getRemoteAudioTracks()) {
+                    RemoteAudioTrack rat = ratp.getRemoteAudioTrack();
+                    if(rat != null)
+                        rat.enablePlayback(b);
+                }
+            }
+        }
+    }
+
     // Button Clicks
     void volumeMuteButtonClick() {
         this.binding.volumeMute.setImageResource(R.drawable.ic_volume_down_green_24px);
@@ -160,10 +176,11 @@ public class OTWrapper implements MotionMenu {
         this.binding.volumeMid.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeLoud.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMax.setImageResource(R.drawable.ic_volume_down_gray_24px);
-        audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, 0, AudioManager.FLAG_SHOW_UI);
+        toggleRemoteAudioTrackPlayback(false);
     }
 
     void volumeMinButtonClick() {
+        toggleRemoteAudioTrackPlayback(true);
         this.binding.volumeMute.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMin.setImageResource(R.drawable.ic_volume_down_green_24px);
         this.binding.volumeMid.setImageResource(R.drawable.ic_volume_down_gray_24px);
@@ -177,6 +194,7 @@ public class OTWrapper implements MotionMenu {
     }
 
     void volumeMidButtonClick(boolean showUI) {
+        toggleRemoteAudioTrackPlayback(true);
         this.binding.volumeMute.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMin.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMid.setImageResource(R.drawable.ic_volume_down_green_24px);
@@ -190,6 +208,7 @@ public class OTWrapper implements MotionMenu {
     }
 
     void volumeLoudButtonClick() {
+        toggleRemoteAudioTrackPlayback(true);
         this.binding.volumeMute.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMin.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMid.setImageResource(R.drawable.ic_volume_down_gray_24px);
@@ -199,6 +218,7 @@ public class OTWrapper implements MotionMenu {
     }
 
     void volumeMaxButtonClick() {
+        toggleRemoteAudioTrackPlayback(true);
         this.binding.volumeMute.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMin.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMid.setImageResource(R.drawable.ic_volume_down_gray_24px);
