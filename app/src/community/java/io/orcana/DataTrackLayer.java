@@ -166,27 +166,25 @@ public class DataTrackLayer {
 
             switch (annotationAction) {
                 case "ADD_ANNOTATION":
-                    JSONObject addAnnotationJsonObject = annotationWrapperJsonObject.getJSONObject("annotation");
-                    annotationView.addShape(addAnnotationJsonObject);
+                    annotationView.addShape(annotationWrapperJsonObject.getJSONObject("annotation"),
+                            annotationWrapperJsonObject.getJSONObject("roomDimensions"));
                     break;
                 case "UPDATE_ANNOTATION":
-                    JSONObject updateAnnotationJsonObject = annotationWrapperJsonObject.getJSONObject("annotation");
-                    annotationView.updateShape(updateAnnotationJsonObject);
+                    annotationView.updateShape(annotationWrapperJsonObject.getJSONObject("annotation"),
+                            annotationWrapperJsonObject.getJSONObject("roomDimensions"));
                     break;
                 case "REMOVE_ANNOTATION":
-                    JSONObject removeAnnotationJsonObject = annotationWrapperJsonObject.getJSONObject("annotation");
-                    annotationView.removeShape(removeAnnotationJsonObject);
+                    annotationView.removeShape(annotationWrapperJsonObject.getJSONObject("annotation"));
                     break;
                 case "RESTART_ANNOTATION":
                     annotationView.clearShapes();
                     break;
                 case "UPDATE_SCREENSHOT":
-                    JSONObject updateScreenshotJsonObject = annotationWrapperJsonObject.getJSONObject("screenshot");
-                    annotationView.handleScreenshot(updateScreenshotJsonObject, screenShotView);
+                    annotationView.handleScreenshot(annotationWrapperJsonObject.getJSONObject("screenshot"), screenShotView);
                     break;
                 case "ADMIN":
                     String identity = annotationWrapperJsonObject.getString("identity");
-                    Timber.d("Identity: %s", room.getLocalParticipant().getIdentity());
+//                    Timber.d("Identity: %s", room.getLocalParticipant().getIdentity());
                     if(identity.equals(room.getLocalParticipant().getIdentity())){
                         switch (annotationWrapperJsonObject.getString("action")){
                             case "mute":
