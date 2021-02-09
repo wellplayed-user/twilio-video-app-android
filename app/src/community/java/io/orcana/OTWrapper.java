@@ -66,7 +66,7 @@ public class OTWrapper implements MotionMenu {
         maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
         volumeMidButtonClick(false);
 
-        this.menuController = new MenuController(roomActivity, this);
+        this.menuController = new MenuController(roomActivity, this, binding.cursorView);
         setupUI(sharedPreferences);
 
         dataTrackLayer = new DataTrackLayer(roomActivity, binding);

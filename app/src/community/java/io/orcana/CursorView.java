@@ -167,6 +167,14 @@ public class CursorView extends View implements SensorEventListener {
         this.active = true;
     }
 
+    public void changeColor(boolean hover){
+        if(hover){
+            this.circlePaint.setColor(ResourcesCompat.getColor(getResources(), R.color.orcanaBlack, null));
+        } else {
+            this.circlePaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+        }
+    }
+
     @SuppressLint("NewApi")
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {

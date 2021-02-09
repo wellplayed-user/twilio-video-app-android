@@ -14,20 +14,25 @@ import java.util.ArrayList;
 import timber.log.Timber;
 
 public class MenuController implements SensorEventListener, ButtonManager {
-    static final float margin = 2.0f;
+    static final float margin = 3.0f;
+    static final float moveDelta = 5.0f;
+    static final double clickWait = 750d;
 
     private final MotionMenu menu;
     private final Sensor gyroSensor;
     private final Sensor gravitySensor;
     private final SensorManager mSensorManager;
+    private final CursorView cursorView;
 
+    boolean isHovering = false;
+    long startGaze;
     float theta = 0.0f;
     double waitTimeStamp = -1d;
     double resetMenuTimeStamp = -1d;
     private boolean isShowing;
     private float menuThreshold;
 
-    public MenuController(Context context, MotionMenu motionMenu) {
+    public MenuController(Context context, MotionMenu motionMenu, CursorView cursorView) {
         this.menu = motionMenu;
         this.mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         this.gyroSensor = this.mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -35,13 +40,13 @@ public class MenuController implements SensorEventListener, ButtonManager {
 
         this.children = new ArrayList<>();
         this.onClickList = new ArrayList<>();
-        this.context = context;
+        this.cursorView = cursorView;
 //        hide();
         show();
     }
 
     public void onResume() {
-        this.mSensorManager.registerListener(this, this.gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
+//        this.mSensorManager.registerListener(this, this.gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
         this.mSensorManager.registerListener(this, this.gravitySensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
@@ -67,16 +72,18 @@ public class MenuController implements SensorEventListener, ButtonManager {
 //            newThreshold = margin;
 //        }
 //        this.menuThreshold = newThreshold;
-        this.menu.hideMenu();
+        this.resetMenuTimeStamp = -1d;
+
+        this.menu.showMenu();
     }
 
     @SuppressLint("NewApi")
     @Override
     public void onSensorChanged(SensorEvent event) {
         switch (event.sensor.getStringType()) {
-            case Sensor.STRING_TYPE_GYROSCOPE:
-                float deltaRotationX = calculateDeltaRotation(event);
-                break;
+//            case Sensor.STRING_TYPE_GYROSCOPE:
+//                float deltaRotationX = calculateDeltaRotation(event);
+//                break;
 
             case Sensor.STRING_TYPE_GRAVITY:
                 double currentTimeStamp = ((double) event.timestamp) * CursorView.nanoToSec;
@@ -85,9 +92,9 @@ public class MenuController implements SensorEventListener, ButtonManager {
                     return;
                 }
 
-                double x = (double) event.values[0];
-                double y = (double) event.values[1];
-                double z = (double) -event.values[2];
+                double x = event.values[0];
+                double y = event.values[1];
+                double z = -event.values[2];
 
                 float newTheta = (float) Math.atan2(z, Math.sqrt((x * x) + (y * y)));
                 newTheta = (float)((180.0/Math.PI) * newTheta);
@@ -96,35 +103,45 @@ public class MenuController implements SensorEventListener, ButtonManager {
                 this.theta = newTheta;
 
                 if(this.resetMenuTimeStamp < 0.0D){
+                    isHovering = false;
                     this.resetMenuTimeStamp = currentTimeStamp + CursorView.timeOffset;
                     this.menuThreshold = this.theta + margin;
                 }
 
-//                Timber.d(theta + " " + this.menuThreshold + " " + Math.abs(dTheta));
-                if(Math.abs(dTheta) <= 5.0f){
+                boolean newHovering = this.theta > this.menuThreshold;
+                if (isHovering != newHovering) {
+                    isHovering = newHovering;
+                    cursorView.changeColor(isHovering);
+                    if(isHovering){
+                        startGaze = System.currentTimeMillis();
+                    }
+                }
+
+                Timber.d(theta + " " + this.menuThreshold + " " + Math.abs(dTheta));
+                if(isHovering){
+                    if (this.startGaze < 0) {
+                        isHovering = false;
+                        cursorView.changeColor(false);
+                        waitTimeStamp = currentTimeStamp + 0.1f;
+                        if (this.isShowing) {
+                            hide();
+                        } else  {
+                            show();
+                        }
+                    } else {
+                        double dt = (double) (System.currentTimeMillis() - this.startGaze);
+                        float progress = (float) (dt / clickWait);
+                        if (progress > 1.0f) {
+                            this.startGaze = -1;
+                        }
+                    }
+                } else if(Math.abs(dTheta) <= moveDelta){
                     if(currentTimeStamp > this.resetMenuTimeStamp){
                         this.menuThreshold = this.theta + margin;
                     }
                 } else {
                     this.resetMenuTimeStamp = currentTimeStamp + CursorView.timeOffset;
                 }
-
-
-//                if(deltaRotationX < 0.25f){
-//                    return;
-//                }
-                if (this.theta > this.menuThreshold) {
-                    waitTimeStamp = currentTimeStamp + 0.1f;
-                    if (this.isShowing) {
-                        hide();
-                    } else  {
-                        show();
-                    }
-                }
-//                else {
-//                    final float newThreshold = (theta + margin);
-//                    menuThreshold = CursorView.clip(newThreshold, minTriggerAngle, menuThreshold);
-//                }
                 break;
         }
     }
@@ -182,7 +199,6 @@ public class MenuController implements SensorEventListener, ButtonManager {
     }
 
     final ArrayList<View> children;
-    protected Context context;
     final ArrayList<View.OnClickListener> onClickList;
 
     public void addChild(View child, View.OnClickListener onClick) {
