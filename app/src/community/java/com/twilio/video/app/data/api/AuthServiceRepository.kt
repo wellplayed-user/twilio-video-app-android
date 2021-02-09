@@ -52,14 +52,24 @@ class AuthServiceRepository(
             val (requestBody, url) = buildRequest(passcode, identity, roomName)
 
             // Production URL
-            val orcanaUrl = "https://app.orcana.io/api/v1/token";
+            val orcanaUrl = "https://app.orcana.io/api/v1/webtoken";
             // Dev URL
             // val orcanaUrl = "https://staging.app.orcana.io/api/v1/token";
 
             try {
                 authService.getToken(orcanaUrl, requestBody).let { response ->
-                    return handleResponse(response)
-                            ?: throw AuthServiceException(message = "Token cannot be null")
+                    return when (val s = handleResponse(response)) {
+                        null -> {
+                            throw AuthServiceException(message = "Token cannot be null")
+                        }
+                        "CASE_DOES_NOT_EXIST" -> {
+                            throw AuthServiceException(message = "CASE_DOES_NOT_EXIST", error = AuthServiceError.CASE_DOES_NOT_EXIST)
+                        }
+                        "CASE_IS_NOT_ACTIVE" -> {
+                            throw AuthServiceException(message = "CASE_IS_NOT_ACTIVE", error = AuthServiceError.CASE_IS_NOT_ACTIVE)
+                        }
+                        else -> s
+                    }
                 }
             } catch (httpException: HttpException) {
                 handleException(httpException)

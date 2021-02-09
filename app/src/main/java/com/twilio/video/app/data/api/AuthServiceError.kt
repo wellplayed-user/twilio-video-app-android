@@ -3,6 +3,8 @@ package com.twilio.video.app.data.api
 import timber.log.Timber
 
 enum class AuthServiceError {
+    CASE_DOES_NOT_EXIST,
+    CASE_IS_NOT_ACTIVE,
     INVALID_PASSCODE_ERROR,
     EXPIRED_PASSCODE_ERROR;
 

@@ -12,9 +12,12 @@
     <!--  Orcana  -->
     <string name="default_user_name">AR Glasses</string>
 <!--    <string name="default_room_name">xmosd</string>-->
-    <string name="default_room_name"></string>
+    <string name="default_room_name" />
     <string name="login_screen_caseid">Case ID</string>
     <string name="passcode">25048049744075</string>
+    <string name="login_screen_error_title_orcana">Uh-oh!</string>
+    <string name="login_screen_auth_error_desc_CASE_DOES_NOT_EXIST">This Case number is not valid, please contact your Medical Device Rep for the correct Case number.</string>
+    <string name="login_screen_auth_error_desc_CASE_IS_NOT_ACTIVE">This session has not started. Please contact your Medical Device Rep to begin.</string>
     <string name="screenshot">Screenshot View</string>
     <string name="mute">mute</string>
     <string name="min">min</string>

@@ -17,11 +17,8 @@
 package com.twilio.video.app.ui.login;
 
 import android.app.AlertDialog;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -144,6 +141,12 @@ public class CommunityLoginActivity extends BaseActivity {
                     binding.passcodeInput.setError(errorMessage);
                     binding.passcodeInput.setErrorEnabled(true);
                     return;
+                case CASE_DOES_NOT_EXIST:
+                    displayAuthErrorOrcana(R.string.login_screen_auth_error_desc_CASE_DOES_NOT_EXIST);
+                    return;
+                case CASE_IS_NOT_ACTIVE:
+                    displayAuthErrorOrcana(R.string.login_screen_auth_error_desc_CASE_IS_NOT_ACTIVE);
+                    return;
             }
         }
 
@@ -197,6 +200,14 @@ public class CommunityLoginActivity extends BaseActivity {
         new AlertDialog.Builder(this, R.style.AppTheme_Dialog)
                 .setTitle(getString(R.string.login_screen_error_title))
                 .setMessage(getString(R.string.login_screen_auth_error_desc))
+                .setPositiveButton("OK", null)
+                .show();
+    }
+
+    private void displayAuthErrorOrcana(int resID) {
+        new AlertDialog.Builder(this, R.style.AppTheme_Dialog)
+                .setTitle(getString(R.string.login_screen_error_title_orcana))
+                .setMessage(getString(resID))
                 .setPositiveButton("OK", null)
                 .show();
     }
