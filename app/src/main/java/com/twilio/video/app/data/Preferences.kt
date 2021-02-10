@@ -61,7 +61,7 @@ object Preferences {
     const val VIDEO_CODEC = "pref_video_codecs"
     const val VIDEO_CODEC_DEFAULT = Vp8Codec.NAME
     const val VP8_SIMULCAST = "pref_vp8_simulcast"
-    const val VP8_SIMULCAST_DEFAULT = false
+    const val VP8_SIMULCAST_DEFAULT = true
     const val AUDIO_CODEC = "pref_audio_codecs"
     const val AUDIO_CODEC_DEFAULT = OpusCodec.NAME
     const val MAX_AUDIO_BITRATE = "pref_max_audio_bitrate"
