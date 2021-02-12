@@ -87,6 +87,9 @@ abstract class ParticipantView extends FrameLayout implements VideoSink {
     }
 
     public void setIdentity(String identity) {
+        if(identity.contains("$")){
+            identity = identity.substring(0, identity.indexOf('$'));
+        }
         this.identity = identity;
         videoIdentity.setText(identity);
         selectedIdentity.setText(identity);
