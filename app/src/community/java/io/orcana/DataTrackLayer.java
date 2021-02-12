@@ -28,6 +28,7 @@ public class DataTrackLayer {
     private static final String DATA_TRACK_MESSAGE_THREAD_NAME = "DataTrackMessages";
 
     private Room room;
+    private final OTWrapper orcana;
     private final RoomManager roomManager;
     private final RoomActivity roomActivity;
 
@@ -44,7 +45,8 @@ public class DataTrackLayer {
 //    private final Map<RemoteDataTrack, RemoteParticipant> dataTrackRemoteParticipantMap =
 //            new HashMap<>();
 
-    public DataTrackLayer(RoomActivity roomActivity, RoomActivityBinding binding) {
+    public DataTrackLayer(OTWrapper otWrapper, RoomActivity roomActivity, RoomActivityBinding binding) {
+        this.orcana = otWrapper;
         this.roomActivity = roomActivity;
         this.roomManager = roomActivity.getRoomManager();
         
@@ -154,12 +156,12 @@ public class DataTrackLayer {
             @Override
             public void onMessage(@NotNull RemoteDataTrack remoteDataTrack, @NotNull String message) {
                 Timber.d("onMessage: %s", message);
-                parserJson(message, annotationView, screenshotView);
+                parserJson(message);
             }
         };
     }
 
-    private void parserJson(String json, AnnotationView annotationView, ImageView screenShotView) {
+    private void parserJson(String json) {
         try {
             JSONObject annotationWrapperJsonObject = new JSONObject(json);
             String annotationAction = annotationWrapperJsonObject.getString("type");
@@ -180,7 +182,7 @@ public class DataTrackLayer {
                     annotationView.clearShapes();
                     break;
                 case "UPDATE_SCREENSHOT":
-                    annotationView.handleScreenshot(annotationWrapperJsonObject.getJSONObject("screenshot"), screenShotView);
+                    annotationView.handleScreenshot(annotationWrapperJsonObject.getJSONObject("screenshot"), screenshotView);
                     break;
                 case "ADMIN":
                     String identity = annotationWrapperJsonObject.getString("identity");
@@ -195,6 +197,9 @@ public class DataTrackLayer {
                                 break;
                             case "kick":
                                 this.roomActivity.runOnUiThread(this.binding.disconnectO::performClick);
+                                break;
+                            case "toggle_glasses":
+                                this.roomActivity.runOnUiThread(this.orcana::showMenu);
                                 break;
                         }
                     }

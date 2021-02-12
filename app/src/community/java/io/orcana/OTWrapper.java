@@ -29,7 +29,7 @@ public class OTWrapper implements MotionMenu {
 
     private final Window window;
 
-    private boolean menuMute = true;
+    private boolean menuMute = false;
 //    private final MenuController menuController;
     private final ButtonManager buttonManager;
 
@@ -70,7 +70,7 @@ public class OTWrapper implements MotionMenu {
         this.buttonManager = new ButtonManager();
         setupUI(sharedPreferences);
 
-        dataTrackLayer = new DataTrackLayer(roomActivity, binding);
+        dataTrackLayer = new DataTrackLayer(this, roomActivity, binding);
 
         // Hack to connect to room without button clicks
         final Handler handler = new Handler(Looper.getMainLooper());
@@ -142,7 +142,7 @@ public class OTWrapper implements MotionMenu {
     @Override
     public void hideMenu() {}
 
-    public void setDisplayMute(boolean newValue) {
+    void setDisplayMute(boolean newValue) {
         if (this.menuMute != newValue) {
             this.menuMute = newValue;
             WindowManager.LayoutParams layoutparams = this.window.getAttributes();

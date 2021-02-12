@@ -73,8 +73,7 @@ public class CommunityLoginActivity extends BaseActivity {
         binding.login.setOnClickListener(this::loginClicked);
         setContentView(binding.getRoot());
 
-        Timber.d("BRAND: %s ", Build.BRAND);
-        Timber.d("MODEL: %s ", Build.MODEL);
+        Timber.d("Device Key: %s ", ("$" + Build.BRAND + "$"));
 
         if (authenticator.loggedIn()) startLobbyActivity();
 
@@ -100,7 +99,7 @@ public class CommunityLoginActivity extends BaseActivity {
     }
 
     private void loginClicked(View view) {
-        String identity = binding.name.getText().toString() + ("$" + Build.BRAND + Build.MODEL + "$");
+        String identity = binding.name.getText().toString() + ("$" + Build.BRAND + "$");
         String passcode = binding.passcode.getText().toString();
         String caseID = binding.caseId.getText().toString();
         login(identity, passcode, caseID);
