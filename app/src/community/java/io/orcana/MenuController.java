@@ -104,7 +104,7 @@ public class MenuController implements SensorEventListener, ButtonManager {
 
                 if(this.resetMenuTimeStamp < 0.0D){
                     isHovering = false;
-                    this.resetMenuTimeStamp = currentTimeStamp + CursorView.timeOffset;
+                    this.resetMenuTimeStamp = currentTimeStamp + CursorView.resetTimeOffset;
                     this.menuThreshold = this.theta + margin;
                 }
 
@@ -117,7 +117,7 @@ public class MenuController implements SensorEventListener, ButtonManager {
                     }
                 }
 
-                Timber.d(theta + " " + this.menuThreshold + " " + Math.abs(dTheta));
+//                Timber.d(theta + " " + this.menuThreshold + " " + Math.abs(dTheta));
                 if(isHovering){
                     if (this.startGaze < 0) {
                         isHovering = false;
@@ -140,7 +140,7 @@ public class MenuController implements SensorEventListener, ButtonManager {
                         this.menuThreshold = this.theta + margin;
                     }
                 } else {
-                    this.resetMenuTimeStamp = currentTimeStamp + CursorView.timeOffset;
+                    this.resetMenuTimeStamp = currentTimeStamp + CursorView.resetTimeOffset;
                 }
                 break;
         }
