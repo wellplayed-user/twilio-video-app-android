@@ -19,7 +19,6 @@ import com.twilio.video.Room;
 import com.twilio.video.app.R;
 import com.twilio.video.app.data.Preferences;
 import com.twilio.video.app.databinding.RoomActivityBinding;
-import com.twilio.video.app.sdk.RoomManager;
 import com.twilio.video.app.ui.room.RoomActivity;
 
 import timber.log.Timber;
@@ -31,7 +30,8 @@ public class OTWrapper implements MotionMenu {
     private final Window window;
 
     private boolean menuMute = true;
-    private final MenuController menuController;
+//    private final MenuController menuController;
+    private final ButtonManager buttonManager;
 
     private final int maxVolume;
     private final AudioManager audioManager;
@@ -66,7 +66,8 @@ public class OTWrapper implements MotionMenu {
         maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
         volumeMidButtonClick(false);
 
-        this.menuController = new MenuController(roomActivity, this, binding.cursorView);
+//        this.menuController = new MenuController(roomActivity, this, binding.cursorView);
+        this.buttonManager = new ButtonManager();
         setupUI(sharedPreferences);
 
         dataTrackLayer = new DataTrackLayer(roomActivity, binding);
@@ -80,13 +81,13 @@ public class OTWrapper implements MotionMenu {
         }, 1500);
     }
 
-    public void onResume() {
-        this.menuController.onResume();
-    }
+//    public void onResume() {
+//        this.menuController.onResume();
+//    }
 
-    public void onPause() {
-        this.menuController.onPause();
-    }
+//    public void onPause() {
+//        this.menuController.onPause();
+//    }
 
     public void onDestroy() {
         this.dataTrackLayer.onDestroy();
@@ -95,33 +96,33 @@ public class OTWrapper implements MotionMenu {
     private void setupUI(SharedPreferences sharedPreferences){
         binding.joinRoom.roomName.setText(sharedPreferences.getString(Preferences.CASE_ID, null));
 
-        this.binding.cursorView.setButtonManager(this.menuController);
+        this.binding.cursorView.setButtonManager(this.buttonManager);
 
-        this.menuController.addChild(binding.joinO, k -> binding.joinO.performClick());
+        this.buttonManager.addChild(binding.joinO, k -> binding.joinO.performClick());
         this.binding.joinO.setOnClickListener(view -> joinRoomClick());
 
-        this.menuController.addChild(binding.disconnectO, k->binding.disconnectO.performClick());
+        this.buttonManager.addChild(binding.disconnectO, k->binding.disconnectO.performClick());
         this.binding.disconnectO.setOnClickListener(view -> disconnectClick());
 
-        this.menuController.addChild(binding.logoutO, k -> binding.logoutO.performClick());
+        this.buttonManager.addChild(binding.logoutO, k -> binding.logoutO.performClick());
         this.binding.logoutO.setOnClickListener(view -> logoutClick());
 
-        this.menuController.addChild(binding.localVideo, k -> binding.localVideo.performClick());
-        this.menuController.addChild(binding.localAudio, k -> binding.localAudio.performClick());
+        this.buttonManager.addChild(binding.localVideo, k -> binding.localVideo.performClick());
+        this.buttonManager.addChild(binding.localAudio, k -> binding.localAudio.performClick());
 
-        this.menuController.addChild(this.binding.volumeMute, k -> this.binding.volumeMute.performClick());
+        this.buttonManager.addChild(this.binding.volumeMute, k -> this.binding.volumeMute.performClick());
         this.binding.volumeMute.setOnClickListener(view -> volumeMuteButtonClick());
 
-        this.menuController.addChild(this.binding.volumeMin, k -> this.binding.volumeMin.performClick());
+        this.buttonManager.addChild(this.binding.volumeMin, k -> this.binding.volumeMin.performClick());
         this.binding.volumeMin.setOnClickListener(view -> volumeMinButtonClick());
 
-        this.menuController.addChild(this.binding.volumeMid, k -> this.binding.volumeMid.performClick());
+        this.buttonManager.addChild(this.binding.volumeMid, k -> this.binding.volumeMid.performClick());
         this.binding.volumeMid.setOnClickListener(view -> volumeMidButtonClick());
 
-        this.menuController.addChild(this.binding.volumeLoud, k -> this.binding.volumeLoud.performClick());
+        this.buttonManager.addChild(this.binding.volumeLoud, k -> this.binding.volumeLoud.performClick());
         this.binding.volumeLoud.setOnClickListener(view -> volumeLoudButtonClick());
 
-        this.menuController.addChild(this.binding.volumeMax, k -> this.binding.volumeMax.performClick());
+        this.buttonManager.addChild(this.binding.volumeMax, k -> this.binding.volumeMax.performClick());
         this.binding.volumeMax.setOnClickListener(view -> volumeMaxButtonClick());
     }
 

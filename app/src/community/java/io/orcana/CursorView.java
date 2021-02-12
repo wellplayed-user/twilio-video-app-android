@@ -21,8 +21,7 @@ import android.view.WindowManager;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.twilio.video.app.R;
-
-import timber.log.Timber;
+import io.orcana.IButtonManager;
 
 public class CursorView extends View implements SensorEventListener {
     static final double clickWait = 5000.0d; // In milliseconds
@@ -48,7 +47,7 @@ public class CursorView extends View implements SensorEventListener {
     long startGaze;
     double lastUpdate;
     double resetCursorTimeStamp;
-    ButtonManager buttonManager;
+    IButtonManager buttonManager;
 
     public CursorView(Context context) {
         this(context, null, 0);
@@ -110,7 +109,7 @@ public class CursorView extends View implements SensorEventListener {
         show();
     }
 
-    public void setButtonManager(ButtonManager bm) {
+    public void setButtonManager(IButtonManager bm) {
         this.buttonManager = bm;
     }
 

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 import timber.log.Timber;
 
-public class MenuController implements SensorEventListener, ButtonManager {
+public class MenuController implements SensorEventListener {
     static final float margin = 3.0f;
     static final float moveDelta = 5.0f;
     static final double clickWait = 750d;
@@ -37,9 +37,6 @@ public class MenuController implements SensorEventListener, ButtonManager {
         this.mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         this.gyroSensor = this.mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         this.gravitySensor = this.mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-
-        this.children = new ArrayList<>();
-        this.onClickList = new ArrayList<>();
         this.cursorView = cursorView;
 //        hide();
         show();
@@ -196,51 +193,5 @@ public class MenuController implements SensorEventListener, ButtonManager {
         // in order to get the updated rotation.
         // rotationCurrent = rotationCurrent * deltaRotationMatrix;
         return 0f;
-    }
-
-    final ArrayList<View> children;
-    final ArrayList<View.OnClickListener> onClickList;
-
-    public void addChild(View child, View.OnClickListener onClick) {
-        this.children.add(child);
-        if (onClick == null) {
-            child.setBackgroundColor(Color.GRAY);
-        }
-        this.onClickList.add(onClick);
-    }
-
-    @Override
-    public void clickButton(int buttonID) {
-        View.OnClickListener listener = this.onClickList.get(buttonID);
-        if (listener != null) {
-            View b = this.children.get(buttonID);
-            Timber.d("clickButton: %s", b.toString());
-            listener.onClick(b);
-        }
-    }
-
-    @Override
-    public int onButton(float x, float y) {
-        for(int i = 0; i < this.children.size(); ++i){
-            View child = this.children.get(i);
-            if (x < ((float) child.getLeft()) || x > ((float) child.getRight()) ||
-                    y < ((float) child.getTop()) || y > ((float) child.getBottom())) {
-                continue;
-            }
-
-            View v = this.children.get(i);
-            if(v == null || !v.isEnabled() ||
-                    v.getVisibility() == View.INVISIBLE || v.getVisibility() == View.GONE){
-                continue;
-            }
-
-            if (this.onClickList.get(i) == null) {
-                return -1;
-            }
-
-            return i;
-        }
-
-        return -1;
     }
 }

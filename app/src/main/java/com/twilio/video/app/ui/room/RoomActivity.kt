@@ -199,14 +199,14 @@ class RoomActivity : BaseActivity() {
         setTitle(displayName)
         roomViewModel.processInput(OnResume)
 
-        this.orcana.onResume()
+//        this.orcana.onResume()
     }
 
     override fun onPause() {
         super.onPause()
         roomViewModel.processInput(OnPause)
 
-        this.orcana.onPause()
+//        this.orcana.onPause()
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
