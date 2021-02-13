@@ -235,6 +235,8 @@ public class OTWrapper implements MotionMenu {
 
     void disconnectClick() {
         Timber.d("disconnect");
+        setDisplayMute(false);
+        this.binding.cursorView.show();
         this.binding.disconnect.performClick();
     }
 
