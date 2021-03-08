@@ -80,7 +80,6 @@
                     android:cursorVisible="true"
                     android:hint="@string/login_screen_name"
                     android:inputType="textPersonName"
-                    android:text="@string/default_user_name"
                     android:textColor="@color/orcanaBlack"
                     android:textCursorDrawable="@drawable/text_cursor" />
             </com.google.android.material.textfield.TextInputLayout>

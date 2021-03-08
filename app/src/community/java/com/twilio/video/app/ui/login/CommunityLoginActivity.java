@@ -38,6 +38,8 @@ import com.twilio.video.app.data.api.AuthServiceError;
 import com.twilio.video.app.databinding.CommunityLoginActivityBinding;
 import com.twilio.video.app.ui.room.RoomActivity;
 import com.twilio.video.app.util.InputUtils;
+
+import io.orcana.DeviceInfo;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import javax.inject.Inject;
@@ -73,7 +75,11 @@ public class CommunityLoginActivity extends BaseActivity {
         binding.login.setOnClickListener(this::loginClicked);
         setContentView(binding.getRoot());
 
-        Timber.d("Device Key: %s ", ("$" + Build.BRAND + "$"));
+        if(DeviceInfo.isHeadset()){
+            binding.name.setText(R.string.default_user_name);
+        } else {
+            // TODO: show qr-code button
+        }
 
         if (authenticator.loggedIn()) startLobbyActivity();
 
@@ -99,7 +105,7 @@ public class CommunityLoginActivity extends BaseActivity {
     }
 
     private void loginClicked(View view) {
-        String identity = binding.name.getText().toString() + ("$" + Build.BRAND + "$");
+        String identity = binding.name.getText().toString() + DeviceInfo.brandWithDelimiter();
         String passcode = binding.passcode.getText().toString();
         String caseID = binding.caseId.getText().toString();
         login(identity, passcode, caseID);
