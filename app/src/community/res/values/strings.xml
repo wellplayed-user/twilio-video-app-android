@@ -3,7 +3,7 @@
     <string name="app_name">Orcana</string>
 
     <!--  Login Screen  -->
-    <string name="login_screen_name">Your name</string>
+    <string name="login_screen_name">Device name</string>
     <string name="login_screen_passcode">Rep ID</string>
     <string name="login_screen_error_title">Log In Error</string>
     <string name="login_screen_invalid_passcode_error">Passcode incorrect.</string>
