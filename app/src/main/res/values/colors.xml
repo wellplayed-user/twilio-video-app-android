@@ -5,6 +5,12 @@
     <color name="cream">#FFEFE0</color>
     <color name="orcanaBlack">#80000000</color>
     <color name="colorPrimaryDark">#7F8587</color>
+    <color name="HyperLinkDefault">#62bee3</color>
+
+    <color name="ButtonPalette_Lightest">#AEDCEE</color>
+    <color name="ButtonPalette_Light">#65C5EB</color>
+    <color name="ButtonPalette_Dark">#62BEE3</color>
+    <color name="ButtonPalette_Darkest">#4F9AB8</color>
 
     <color name="colorAccent">#b0bec5</color>
     <color name="colorButtonText">#80fffffe</color>

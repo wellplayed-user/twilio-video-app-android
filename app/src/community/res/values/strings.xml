@@ -10,6 +10,17 @@
     <string name="login_screen_expired_passcode_error">Passcode expired.</string>
 
     <!--  Orcana  -->
+    <string name="qrcode_subtext">
+        The AR glasses must scan this QR code<br/>
+        to join Orcana. Proceed when the AR<br/>
+        glasses are connected.
+    </string>
+    <string name="qr_title">
+        Connect the<br/>
+        AR Glasses
+    </string>
+    <string name="input_title">Sign into case</string>
+
     <string name="default_user_name">AR Glasses</string>
 <!--    <string name="default_room_name">xmosd</string>-->
     <string name="default_room_name" />

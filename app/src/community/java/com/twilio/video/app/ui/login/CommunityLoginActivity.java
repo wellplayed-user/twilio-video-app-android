@@ -17,6 +17,7 @@
 package com.twilio.video.app.ui.login;
 
 import android.app.AlertDialog;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -27,6 +28,8 @@ import android.view.WindowInsetsController;
 import android.view.WindowManager;
 
 import androidx.core.content.res.ResourcesCompat;
+
+import com.google.zxing.WriterException;
 import com.twilio.video.app.R;
 import com.twilio.video.app.auth.Authenticator;
 import com.twilio.video.app.auth.CommunityLoginResult.CommunityLoginFailureResult;
@@ -36,10 +39,14 @@ import com.twilio.video.app.auth.LoginResult;
 import com.twilio.video.app.base.BaseActivity;
 import com.twilio.video.app.data.api.AuthServiceError;
 import com.twilio.video.app.databinding.CommunityLoginActivityBinding;
+import com.twilio.video.app.databinding.TabletLoginActivityBinding;
 import com.twilio.video.app.ui.room.RoomActivity;
 import com.twilio.video.app.util.InputUtils;
 
+import java.io.IOException;
+
 import io.orcana.DeviceInfo;
+import io.orcana.QRCodeGenerator;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import javax.inject.Inject;
@@ -48,6 +55,7 @@ import timber.log.Timber;
 // TODO Create view model and fragment for this screen
 public class CommunityLoginActivity extends BaseActivity {
     private CommunityLoginActivityBinding binding;
+    private TabletLoginActivityBinding tabletBinding;
 
     @Inject Authenticator authenticator;
     TextWatcher textWatcher =
@@ -68,17 +76,25 @@ public class CommunityLoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = CommunityLoginActivityBinding.inflate(getLayoutInflater());
-        binding.name.addTextChangedListener(textWatcher);
-        binding.passcode.addTextChangedListener(textWatcher);
-        binding.caseId.addTextChangedListener(textWatcher);
-        binding.login.setOnClickListener(this::loginClicked);
-        setContentView(binding.getRoot());
 
         if(DeviceInfo.isHeadset()){
+            binding = CommunityLoginActivityBinding.inflate(getLayoutInflater());
+            binding.name.addTextChangedListener(textWatcher);
+            binding.passcode.addTextChangedListener(textWatcher);
+            binding.caseId.addTextChangedListener(textWatcher);
+            binding.login.setOnClickListener(this::loginClicked);
+            setContentView(binding.getRoot());
+
             binding.name.setText(R.string.default_user_name);
         } else {
-            // TODO: show qr-code button
+            tabletBinding = TabletLoginActivityBinding.inflate(getLayoutInflater());
+            tabletBinding.name.addTextChangedListener(textWatcher);
+            tabletBinding.passcode.addTextChangedListener(textWatcher);
+            tabletBinding.caseId.addTextChangedListener(textWatcher);
+            tabletBinding.inputContinue.setOnClickListener(this::inputContinueClicked);
+            tabletBinding.qrContinue.setOnClickListener(this::loginClicked);
+            tabletBinding.TypeInfoLayout.setVisibility(View.VISIBLE);
+            setContentView(tabletBinding.getRoot());
         }
 
         if (authenticator.loggedIn()) startLobbyActivity();
@@ -104,10 +120,30 @@ public class CommunityLoginActivity extends BaseActivity {
         enableLoginButton(isInputValid());
     }
 
+    private void inputContinueClicked(View view){
+        tabletBinding.TypeInfoLayout.setVisibility(View.GONE);
+        tabletBinding.QRCodeLayout.setVisibility(View.VISIBLE);
+
+        try {
+            Bitmap bitmap = QRCodeGenerator.getQRCodeImage(tabletBinding.caseId.getText().toString(), 512, 512);
+            tabletBinding.QRCodeView.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void loginClicked(View view) {
-        String identity = binding.name.getText().toString() + DeviceInfo.brandWithDelimiter();
-        String passcode = binding.passcode.getText().toString();
-        String caseID = binding.caseId.getText().toString();
+        if(DeviceInfo.isHeadset()){
+            String identity = binding.name.getText().toString() + DeviceInfo.brandWithDelimiter();
+            String passcode = binding.passcode.getText().toString();
+            String caseID = binding.caseId.getText().toString();
+            login(identity, passcode, caseID);
+            return;
+        }
+
+        String identity = tabletBinding.name.getText().toString() + DeviceInfo.brandWithDelimiter();
+        String passcode = tabletBinding.passcode.getText().toString();
+        String caseID = tabletBinding.caseId.getText().toString();
         login(identity, passcode, caseID);
     }
 
@@ -164,38 +200,62 @@ public class CommunityLoginActivity extends BaseActivity {
     private void preLoginViewState() {
         InputUtils.hideKeyboard(this);
         enableLoginButton(false);
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.passcodeInput.setErrorEnabled(false);
+        if(DeviceInfo.isHeadset()){
+            binding.progressBar.setVisibility(View.VISIBLE);
+            binding.passcodeInput.setErrorEnabled(false);
+        }
     }
 
     private void postLoginViewState() {
-        binding.progressBar.setVisibility(View.GONE);
-        enableLoginButton(true);
+        if(DeviceInfo.isHeadset()){
+            binding.progressBar.setVisibility(View.GONE);
+            enableLoginButton(true);
+        }
     }
 
     private boolean isInputValid() {
-        Editable nameEditable = binding.name.getText();
-        Editable passcodeEditable = binding.passcode.getText();
-        Editable caseIDEditable = binding.caseId.getText();
+        if(DeviceInfo.isHeadset()){
+            Editable nameEditable = binding.name.getText();
+            Editable passcodeEditable = binding.passcode.getText();
+            Editable caseIDEditable = binding.caseId.getText();
 
-        if (nameEditable != null
+            return nameEditable != null
+                    && passcodeEditable != null
+                    && caseIDEditable != null
+                    && !nameEditable.toString().isEmpty()
+                    && !passcodeEditable.toString().isEmpty()
+                    && !caseIDEditable.toString().isEmpty();
+        }
+
+        Editable nameEditable = tabletBinding.name.getText();
+        Editable passcodeEditable = tabletBinding.passcode.getText();
+        Editable caseIDEditable = tabletBinding.caseId.getText();
+
+        return nameEditable != null
                 && passcodeEditable != null
                 && caseIDEditable != null
                 && !nameEditable.toString().isEmpty()
                 && !passcodeEditable.toString().isEmpty()
-                && !caseIDEditable.toString().isEmpty()) {
-            return true;
-        }
-        return false;
+                && !caseIDEditable.toString().isEmpty();
     }
 
     private void enableLoginButton(boolean isEnabled) {
-        if (isEnabled) {
-            binding.login.setTextColor(ResourcesCompat.getColor(getResources(), R.color.orcanaBlack, null));
-            binding.login.setEnabled(true);
+        if(DeviceInfo.isHeadset()){
+            if (isEnabled) {
+    //            binding.login.setTextColor(ResourcesCompat.getColor(getResources(), R.color.orcanaBlack, null));
+                binding.login.setEnabled(true);
+            } else {
+    //            binding.login.setTextColor(ResourcesCompat.getColor(getResources(), R.color.cream, null));
+                binding.login.setEnabled(false);
+            }
         } else {
-            binding.login.setTextColor(ResourcesCompat.getColor(getResources(), R.color.cream, null));
-            binding.login.setEnabled(false);
+            if (isEnabled) {
+                //            binding.login.setTextColor(ResourcesCompat.getColor(getResources(), R.color.orcanaBlack, null));
+                tabletBinding.inputContinue.setEnabled(true);
+            } else {
+                //            binding.login.setTextColor(ResourcesCompat.getColor(getResources(), R.color.cream, null));
+                tabletBinding.inputContinue.setEnabled(false);
+            }
         }
     }
 

@@ -139,6 +139,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     def daggerVersion = '2.25.4'
     def daggerAndroidProcessor = "com.google.dagger:dagger-android-processor:$daggerVersion"
     def daggerCompiler = "com.google.dagger:dagger-compiler:$daggerVersion"
@@ -225,6 +226,8 @@ dependencies {
     // Orcana Additions
     implementation 'com.vuzix:hud-actionmenu:2.0'
     implementation 'com.vuzix:hud-resources:1.2'
+    implementation "com.google.zxing:core:3.4.1"
+    implementation 'com.google.zxing:javase:3.4.1'
 }
 
 def getLocalProperty(key) {

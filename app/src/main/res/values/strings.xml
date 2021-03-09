@@ -105,6 +105,7 @@
     <string name="app_name">Orcana</string>
     <string name="client_name">Client Name</string>
     <string name="login">LOG IN</string>
+    <string name="continue_text">CONTINUE</string>
     <string name="settings_title">Settings</string>
     <string name="settings_title_advanced">Advanced</string>
     <string name="settings_title_internal">Internal</string>
