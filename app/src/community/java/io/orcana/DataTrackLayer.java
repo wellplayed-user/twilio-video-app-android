@@ -5,6 +5,7 @@ import android.os.HandlerThread;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.twilio.video.LocalParticipant;
 import com.twilio.video.RemoteDataTrack;
 import com.twilio.video.RemoteDataTrackPublication;
 import com.twilio.video.RemoteParticipant;
@@ -186,9 +187,13 @@ public class DataTrackLayer {
                     break;
                 case "ADMIN":
                     String identity = annotationWrapperJsonObject.getString("identity");
-//                    Timber.d("Identity: %s", room.getLocalParticipant().getIdentity());
-                    if(identity.equals(room.getLocalParticipant().getIdentity())){
-                        switch (annotationWrapperJsonObject.getString("action")){
+                    String action = annotationWrapperJsonObject.getString("action");
+                    //  Timber.d("Identity: %s", room.getLocalParticipant().getIdentity());
+                    LocalParticipant localParticipant = room.getLocalParticipant();
+                    if(action.equals("broadcastSelectedParticipant")){
+                        roomActivity.getRoomViewModel().getParticipantManager().changePinnedParticipant(identity);
+                    } else if(identity.equals(localParticipant.getIdentity())){
+                        switch (action){
                             case "mute":
                                 this.roomActivity.runOnUiThread(this.binding.localAudio::performClick);
                                 break;

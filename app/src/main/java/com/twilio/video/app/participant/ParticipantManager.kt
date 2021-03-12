@@ -134,8 +134,8 @@ class ParticipantManager {
     private fun determinePrimaryParticipant(): ParticipantViewState {
         return mutableParticipants.find { it.isPinned }
                 ?: mutableParticipants.find { it.isScreenSharing }
-                ?: mutableParticipants.find { it.isDominantSpeaker }
-                ?: mutableParticipants.find { !it.isLocalParticipant }
+//                ?: mutableParticipants.find { it.isDominantSpeaker }
+//                ?: mutableParticipants.find { !it.isLocalParticipant }
                 ?: mutableParticipants[0] // local participant
     }
 

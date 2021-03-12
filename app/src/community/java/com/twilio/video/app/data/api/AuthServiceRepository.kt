@@ -52,9 +52,9 @@ class AuthServiceRepository(
             val (requestBody, url) = buildRequest(passcode, identity, roomName)
 
             // Production URL
-            val orcanaUrl = "https://app.orcana.io/api/v1/webtoken";
+//            val orcanaUrl = "https://app.orcana.io/api/v1/webtoken";
             // Dev URL
-            // val orcanaUrl = "https://staging.app.orcana.io/api/v1/token";
+             val orcanaUrl = "https://staging.app.orcana.io/api/v1/webtoken";
 
             try {
                 authService.getToken(orcanaUrl, requestBody).let { response ->
