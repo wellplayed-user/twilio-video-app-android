@@ -8,3 +8,8 @@
 -keep class com.facebook.crypto.** { *; }
 -keep class com.facebook.jni.** { *; }
 -keepclassmembers class com.facebook.cipher.jni.** { *; }
+
+# Orcana
+-keep class com.vuzix.sdk.barcode.** {
+    *;
+}

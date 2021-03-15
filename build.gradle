@@ -201,5 +201,10 @@ allprojects {
         maven {
             url 'https://jitpack.io'
         }
+
+        // Orcana
+        maven {
+            url  "https://dl.bintray.com/vuzix/lib"
+        }
     }
 }

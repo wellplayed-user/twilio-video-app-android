@@ -16,7 +16,9 @@
 
 package com.twilio.video.app.ui.login;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import android.view.WindowManager;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.google.zxing.WriterException;
+import com.google.zxing.qrcode.QRCodeReader;
 import com.twilio.video.app.R;
 import com.twilio.video.app.auth.Authenticator;
 import com.twilio.video.app.auth.CommunityLoginResult.CommunityLoginFailureResult;
@@ -52,8 +55,13 @@ import io.reactivex.disposables.CompositeDisposable;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+import com.vuzix.sdk.barcode.ScannerIntent;
+import com.vuzix.sdk.barcode.ScanResult2;
+
 // TODO Create view model and fragment for this screen
 public class CommunityLoginActivity extends BaseActivity {
+    private static final int REQUEST_CODE_SCAN = 0;
+
     private CommunityLoginActivityBinding binding;
     private TabletLoginActivityBinding tabletBinding;
 
@@ -79,13 +87,21 @@ public class CommunityLoginActivity extends BaseActivity {
 
         if(DeviceInfo.isHeadset()){
             binding = CommunityLoginActivityBinding.inflate(getLayoutInflater());
+
             binding.name.addTextChangedListener(textWatcher);
+            binding.name.setText(R.string.default_user_name);
+
             binding.passcode.addTextChangedListener(textWatcher);
             binding.caseId.addTextChangedListener(textWatcher);
-            binding.login.setOnClickListener(this::loginClicked);
-            setContentView(binding.getRoot());
 
-            binding.name.setText(R.string.default_user_name);
+            binding.login.setOnClickListener(this::loginClicked);
+            binding.scanButton.setOnClickListener(this::scanClicked);
+            binding.typeInfoButton.setOnClickListener(this::typeInfoSwitchClicked);
+
+            binding.LoginInfo.setVisibility(View.GONE);
+            binding.ButtonLogin.setVisibility(View.VISIBLE);
+
+            setContentView(binding.getRoot());
         } else {
             tabletBinding = TabletLoginActivityBinding.inflate(getLayoutInflater());
             tabletBinding.name.addTextChangedListener(textWatcher);
@@ -116,6 +132,19 @@ public class CommunityLoginActivity extends BaseActivity {
 //        handler.postDelayed(() -> loginClicked(null), 3000);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_SCAN) {
+            if (resultCode == Activity.RESULT_OK) {
+                ScanResult2 scanResult = data.getParcelableExtra(ScannerIntent.RESULT_EXTRA_SCAN_RESULT2);
+                binding.caseId.setText(scanResult.getText());
+                loginClicked(null);
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     private void passcodeChanged(Editable editable) {
         enableLoginButton(isInputValid());
     }
@@ -130,6 +159,16 @@ public class CommunityLoginActivity extends BaseActivity {
         } catch (WriterException e) {
             e.printStackTrace();
         }
+    }
+
+    private void scanClicked(View view){
+        Intent scannerIntent = new Intent(ScannerIntent.ACTION);
+        startActivityForResult(scannerIntent, REQUEST_CODE_SCAN);
+    }
+
+    private void typeInfoSwitchClicked(View view){
+        binding.ButtonLogin.setVisibility(View.GONE);
+        binding.LoginInfo.setVisibility(View.VISIBLE);
     }
 
     private void loginClicked(View view) {
@@ -177,13 +216,13 @@ public class CommunityLoginActivity extends BaseActivity {
             switch (error) {
                 case INVALID_PASSCODE_ERROR:
                     errorMessage = getString(R.string.login_screen_invalid_passcode_error);
-                    binding.passcodeInput.setError(errorMessage);
-                    binding.passcodeInput.setErrorEnabled(true);
+                    binding.passcodeInput2.setError(errorMessage);
+                    binding.passcodeInput2.setErrorEnabled(true);
                     return;
                 case EXPIRED_PASSCODE_ERROR:
                     errorMessage = getString(R.string.login_screen_expired_passcode_error);
-                    binding.passcodeInput.setError(errorMessage);
-                    binding.passcodeInput.setErrorEnabled(true);
+                    binding.passcodeInput2.setError(errorMessage);
+                    binding.passcodeInput2.setErrorEnabled(true);
                     return;
                 case CASE_DOES_NOT_EXIST:
                     displayAuthErrorOrcana(R.string.login_screen_auth_error_desc_CASE_DOES_NOT_EXIST);
@@ -202,7 +241,7 @@ public class CommunityLoginActivity extends BaseActivity {
         enableLoginButton(false);
         if(DeviceInfo.isHeadset()){
             binding.progressBar.setVisibility(View.VISIBLE);
-            binding.passcodeInput.setErrorEnabled(false);
+            binding.passcodeInput2.setErrorEnabled(false);
         }
     }
 

@@ -20,6 +20,13 @@
         AR Glasses
     </string>
     <string name="input_title">Sign into case</string>
+    <string name="qr_input_title">Scan QR Code to Join</string>
+    <string name="scan_qr_button">Scan</string>
+    <string name="qr_code_view">QRCode View</string>
+    <string name="type_info_text">Type Info</string>
+    <string name="type_info_button">Switch</string>
+    <string name="logo_content_description">Orcana Logo</string>
+    <string name="footer_content_description">footer</string>
 
     <string name="default_user_name">AR Glasses</string>
 <!--    <string name="default_room_name">xmosd</string>-->

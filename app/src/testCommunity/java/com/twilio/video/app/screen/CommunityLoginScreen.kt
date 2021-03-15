@@ -51,7 +51,7 @@ fun assertExpiredPasscodeErrorIsDisplayed() {
 }
 
 fun assertThatPasscodeErrorIsDisabled() {
-    onView(withId(R.id.passcode_input)).check(matches(not(isTextInputLayoutError())))
+    onView(withId(R.id.passcode_input2)).check(matches(not(isTextInputLayoutError())))
 }
 
 fun assertErrorDialogIsDisplayed() {
