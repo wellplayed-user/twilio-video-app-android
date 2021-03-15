@@ -25,7 +25,7 @@
         android:background="@drawable/tablet_login_input_background"
         android:elevation="1dp"
         android:translationY="-40dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header">
@@ -154,7 +154,6 @@
         android:background="@drawable/tablet_login_input_background"
         android:elevation="1dp"
         android:translationY="-40dp"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header">
@@ -201,7 +200,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="64dp"
             android:background="@drawable/button_background"
             android:enabled="true"
             android:fontFamily="@font/roboto"

@@ -109,7 +109,10 @@ public class CommunityLoginActivity extends BaseActivity {
             tabletBinding.caseId.addTextChangedListener(textWatcher);
             tabletBinding.inputContinue.setOnClickListener(this::inputContinueClicked);
             tabletBinding.qrContinue.setOnClickListener(this::loginClicked);
+
+            tabletBinding.QRCodeLayout.setVisibility(View.GONE);
             tabletBinding.TypeInfoLayout.setVisibility(View.VISIBLE);
+
             setContentView(tabletBinding.getRoot());
         }
 
