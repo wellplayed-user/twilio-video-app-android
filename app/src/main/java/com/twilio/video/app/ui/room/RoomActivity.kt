@@ -191,6 +191,7 @@ class RoomActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
         checkIntentURI()
+        this.orcana.onStart()
     }
 
     override fun onResume() {

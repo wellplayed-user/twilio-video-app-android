@@ -2,16 +2,19 @@ package io.orcana;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
 
+import com.google.zxing.WriterException;
 import com.twilio.video.RemoteAudioTrack;
 import com.twilio.video.RemoteAudioTrackPublication;
 import com.twilio.video.RemoteParticipant;
@@ -79,6 +82,28 @@ public class OTWrapper implements MotionMenu {
 //            roomActivity.toggleLocalVideo();
             binding.joinO.performClick();
         }, 1500);
+    }
+
+    public void onStart(){
+        if(DeviceInfo.isTablet()){
+            binding.QRCodeLayout.setVisibility(View.VISIBLE);
+            binding.qrContinue.setOnClickListener(this::hideQRCodeLayout);
+
+            try {
+                Editable text = binding.joinRoom.roomName.getText();
+                if (text != null) {
+                    String caseID = text.toString();
+                    Bitmap bitmap = QRCodeGenerator.getQRCodeImage(caseID, 512, 512);
+                    binding.QRCodeView.setImageBitmap(bitmap);
+                }
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void hideQRCodeLayout(View view){
+        binding.QRCodeLayout.setVisibility(View.GONE);
     }
 
 //    public void onResume() {

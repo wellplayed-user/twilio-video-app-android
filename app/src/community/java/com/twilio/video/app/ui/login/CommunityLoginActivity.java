@@ -107,11 +107,12 @@ public class CommunityLoginActivity extends BaseActivity {
             tabletBinding.name.addTextChangedListener(textWatcher);
             tabletBinding.passcode.addTextChangedListener(textWatcher);
             tabletBinding.caseId.addTextChangedListener(textWatcher);
-            tabletBinding.inputContinue.setOnClickListener(this::inputContinueClicked);
-            tabletBinding.qrContinue.setOnClickListener(this::loginClicked);
+            tabletBinding.inputContinue.setOnClickListener(this::loginClicked);
+//            tabletBinding.qrContinue.setOnClickListener(this::loginClicked);
+//            tabletBinding.inputContinue.setOnClickListener(this::inputContinueClicked);
 
-            tabletBinding.QRCodeLayout.setVisibility(View.GONE);
-            tabletBinding.TypeInfoLayout.setVisibility(View.VISIBLE);
+//            tabletBinding.QRCodeLayout.setVisibility(View.GONE);
+//            tabletBinding.TypeInfoLayout.setVisibility(View.VISIBLE);
 
             setContentView(tabletBinding.getRoot());
         }
@@ -152,17 +153,17 @@ public class CommunityLoginActivity extends BaseActivity {
         enableLoginButton(isInputValid());
     }
 
-    private void inputContinueClicked(View view){
-        tabletBinding.TypeInfoLayout.setVisibility(View.GONE);
-        tabletBinding.QRCodeLayout.setVisibility(View.VISIBLE);
-
-        try {
-            Bitmap bitmap = QRCodeGenerator.getQRCodeImage(tabletBinding.caseId.getText().toString(), 512, 512);
-            tabletBinding.QRCodeView.setImageBitmap(bitmap);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void inputContinueClicked(View view){
+//        tabletBinding.TypeInfoLayout.setVisibility(View.GONE);
+//        tabletBinding.QRCodeLayout.setVisibility(View.VISIBLE);
+//
+//        try {
+//            Bitmap bitmap = QRCodeGenerator.getQRCodeImage(tabletBinding.caseId.getText().toString(), 512, 512);
+//            tabletBinding.QRCodeView.setImageBitmap(bitmap);
+//        } catch (WriterException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void scanClicked(View view){
         Intent scannerIntent = new Intent(ScannerIntent.ACTION);

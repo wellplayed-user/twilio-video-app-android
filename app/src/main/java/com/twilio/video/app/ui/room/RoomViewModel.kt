@@ -78,7 +78,7 @@ class RoomViewModel(
     private val roomManager: RoomManager,
     private val audioSwitch: AudioSwitch,
     private val permissionUtil: PermissionUtil,
-    public val participantManager: ParticipantManager = ParticipantManager(),
+    val participantManager: ParticipantManager = ParticipantManager(),
     initialViewState: RoomViewState = RoomViewState(participantManager.primaryParticipant)
 ) : AndroidDataFlow(defaultState = initialViewState) {
 
