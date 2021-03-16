@@ -10,6 +10,7 @@ import com.twilio.video.RemoteDataTrack;
 import com.twilio.video.RemoteDataTrackPublication;
 import com.twilio.video.RemoteParticipant;
 import com.twilio.video.Room;
+import com.twilio.video.app.participant.ParticipantManager;
 import com.twilio.video.app.sdk.RoomManager;
 import com.twilio.video.app.ui.room.RoomActivity;
 import com.twilio.video.app.ui.room.RoomEvent;
@@ -79,7 +80,7 @@ public class DataTrackLayer {
         }
     }
 
-    public  void disconnected(RoomEvent.Disconnected roomEvent){
+    public void disconnected(RoomEvent.Disconnected roomEvent){
         Timber.d("Disconnected Event: %s", roomEvent.toString());
         disconnectFromRoom();
     }
@@ -191,7 +192,17 @@ public class DataTrackLayer {
                     //  Timber.d("Identity: %s", room.getLocalParticipant().getIdentity());
                     LocalParticipant localParticipant = room.getLocalParticipant();
                     if(action.equals("broadcastSelectedParticipant")){
-                        roomActivity.getRoomViewModel().getParticipantManager().changePinnedParticipant(identity);
+                        String caseCreatorSid = annotationWrapperJsonObject.getString("caseCreatorSid");
+                        ParticipantManager participantManager = roomActivity.getRoomViewModel().getParticipantManager();
+                        if(identity.equals(localParticipant.getSid())){
+                            participantManager.changePinnedParticipant(caseCreatorSid);
+                        } else {
+                            participantManager.changePinnedParticipant(identity);
+                        }
+
+                        if(participantManager.existingPin() == null){
+                            participantManager.changePinnedParticipant(caseCreatorSid);
+                        }
                     } else if(identity.equals(localParticipant.getIdentity())){
                         switch (action){
                             case "mute":
