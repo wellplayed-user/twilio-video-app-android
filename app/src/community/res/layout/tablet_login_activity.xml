@@ -50,9 +50,20 @@
             android:layout_marginEnd="100dp"
             android:background="@color/cream"
             android:textColorHint="@color/orcanaBlack"
+            app:boxBackgroundColor="@color/orcanaBlack"
+            app:boxStrokeColor="@color/orcanaBlack"
+            app:boxStrokeErrorColor="@color/orcanaBlack"
+            app:counterOverflowTextColor="@color/orcanaBlack"
+            app:counterTextColor="@color/orcanaBlack"
+            app:errorTextColor="@color/orcanaBlack"
+            app:helperTextTextColor="@color/orcanaBlack"
+            app:hintTextColor="@color/orcanaBlack"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/input_title">
+            app:layout_constraintTop_toBottomOf="@id/input_title"
+            app:placeholderTextColor="@color/orcanaBlack"
+            app:prefixTextColor="@color/orcanaBlack"
+            app:suffixTextColor="@color/orcanaBlack">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name"
@@ -65,6 +76,9 @@
                 android:hint="@string/login_screen_name"
                 android:inputType="textPersonName"
                 android:textColor="@color/orcanaBlack"
+                android:textColorHighlight="@color/orcanaBlack"
+                android:textColorHint="@color/orcanaBlack"
+                android:textColorLink="@color/orcanaBlack"
                 android:textCursorDrawable="@drawable/text_cursor"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -105,10 +119,21 @@
             android:layout_marginEnd="100dp"
             android:background="@color/cream"
             android:textColorHint="@color/orcanaBlack"
+            app:boxBackgroundColor="@color/orcanaBlack"
+            app:boxStrokeColor="@color/orcanaBlack"
+            app:boxStrokeErrorColor="@color/orcanaBlack"
+            app:counterOverflowTextColor="@color/orcanaBlack"
+            app:counterTextColor="@color/orcanaBlack"
             app:errorTextAppearance="@style/ErrorTextAppearance"
+            app:errorTextColor="@color/orcanaBlack"
+            app:helperTextTextColor="@color/orcanaBlack"
+            app:hintTextColor="@color/orcanaBlack"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name_layout">
+            app:layout_constraintTop_toBottomOf="@+id/name_layout"
+            app:placeholderTextColor="@color/orcanaBlack"
+            app:prefixTextColor="@color/orcanaBlack"
+            app:suffixTextColor="@color/orcanaBlack">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/case_id"
@@ -121,9 +146,26 @@
                 android:inputType="textVisiblePassword"
                 android:text="@string/default_room_name"
                 android:textColor="@color/orcanaBlack"
+                android:textColorHighlight="@color/orcanaBlack"
+                android:textColorHint="@color/orcanaBlack"
+                android:textColorLink="@color/orcanaBlack"
                 android:textCursorDrawable="@drawable/text_cursor"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:buttonTint="@color/HyperLinkDefault"
+            android:checked="false"
+            android:fontFamily="@font/roboto"
+            android:text="@string/TermsCheckbox"
+            android:textColorLink="@color/HyperLinkDefault"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/caseid_layout" />
 
         <Button
             android:id="@+id/input_continue"
@@ -135,13 +177,13 @@
             android:enabled="false"
             android:fontFamily="@font/roboto"
             android:padding="10dp"
-            android:text="@string/continue_text"
+            android:text="@string/done"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/caseid_layout" />
+            app:layout_constraintTop_toBottomOf="@id/checkBox" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

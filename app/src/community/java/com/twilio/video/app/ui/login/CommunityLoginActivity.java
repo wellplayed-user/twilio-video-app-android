@@ -20,20 +20,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 
-import androidx.core.content.res.ResourcesCompat;
-
-import com.google.zxing.WriterException;
-import com.google.zxing.qrcode.QRCodeReader;
 import com.twilio.video.app.R;
 import com.twilio.video.app.auth.Authenticator;
 import com.twilio.video.app.auth.CommunityLoginResult.CommunityLoginFailureResult;
@@ -47,10 +44,7 @@ import com.twilio.video.app.databinding.TabletLoginActivityBinding;
 import com.twilio.video.app.ui.room.RoomActivity;
 import com.twilio.video.app.util.InputUtils;
 
-import java.io.IOException;
-
 import io.orcana.DeviceInfo;
-import io.orcana.QRCodeGenerator;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import javax.inject.Inject;
@@ -112,6 +106,10 @@ public class CommunityLoginActivity extends BaseActivity {
             tabletBinding.passcode.addTextChangedListener(textWatcher);
             tabletBinding.caseId.addTextChangedListener(textWatcher);
             tabletBinding.inputContinue.setOnClickListener(this::loginClicked);
+
+            tabletBinding.checkBox.setMovementMethod(LinkMovementMethod.getInstance());
+            tabletBinding.checkBox.setOnCheckedChangeListener(this::onCheckedChanged);
+
 //            tabletBinding.qrContinue.setOnClickListener(this::loginClicked);
 //            tabletBinding.inputContinue.setOnClickListener(this::inputContinueClicked);
 
@@ -177,6 +175,10 @@ public class CommunityLoginActivity extends BaseActivity {
     private void typeInfoSwitchClicked(View view){
         binding.ButtonLogin.setVisibility(View.GONE);
         binding.LoginInfo.setVisibility(View.VISIBLE);
+    }
+
+    void onCheckedChanged(CompoundButton var1, boolean var2){
+        enableLoginButton(isInputValid());
     }
 
     private void loginClicked(View view) {
@@ -277,13 +279,13 @@ public class CommunityLoginActivity extends BaseActivity {
         Editable nameEditable = tabletBinding.name.getText();
         Editable passcodeEditable = tabletBinding.passcode.getText();
         Editable caseIDEditable = tabletBinding.caseId.getText();
-
         return nameEditable != null
                 && passcodeEditable != null
                 && caseIDEditable != null
                 && !nameEditable.toString().isEmpty()
                 && !passcodeEditable.toString().isEmpty()
-                && !caseIDEditable.toString().isEmpty();
+                && !caseIDEditable.toString().isEmpty()
+                && tabletBinding.checkBox.isChecked();
     }
 
     private void enableLoginButton(boolean isEnabled) {
