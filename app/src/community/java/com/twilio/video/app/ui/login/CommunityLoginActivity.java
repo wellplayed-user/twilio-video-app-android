@@ -19,6 +19,7 @@ package com.twilio.video.app.ui.login;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -103,6 +104,9 @@ public class CommunityLoginActivity extends BaseActivity {
 
             setContentView(binding.getRoot());
         } else {
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+
             tabletBinding = TabletLoginActivityBinding.inflate(getLayoutInflater());
             tabletBinding.name.addTextChangedListener(textWatcher);
             tabletBinding.passcode.addTextChangedListener(textWatcher);
