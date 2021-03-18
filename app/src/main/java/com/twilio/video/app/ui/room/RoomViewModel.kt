@@ -65,6 +65,7 @@ import com.twilio.video.app.ui.room.RoomViewEvent.ToggleLocalVideo
 import com.twilio.video.app.ui.room.RoomViewEvent.VideoTrackRemoved
 import com.twilio.video.app.util.PermissionUtil
 import io.orcana.DataTrackLayer
+import io.orcana.OTWrapper
 import io.uniflow.androidx.flow.AndroidDataFlow
 import io.uniflow.core.flow.actionOn
 import io.uniflow.core.flow.data.UIState
@@ -183,7 +184,7 @@ class RoomViewModel(
         }
     }
 
-    lateinit var dataTrackLayer:DataTrackLayer
+    lateinit var orcana:OTWrapper
 
     private fun observeRoomEvents(roomEvent: RoomEvent) {
         Timber.d("observeRoomEvents: %s", roomEvent)
@@ -195,11 +196,11 @@ class RoomViewModel(
                 showConnectedViewState(roomEvent.roomName)
                 checkParticipants(roomEvent.participants)
                 action { sendEvent { RoomViewEffect.Connected(roomEvent.room) } }
-                dataTrackLayer.connected(roomEvent)
+                orcana.connected(roomEvent)
             }
             is Disconnected -> {
                 showLobbyViewState()
-                dataTrackLayer.disconnected(roomEvent)
+                orcana.disconnected(roomEvent)
             }
             is DominantSpeakerChanged -> {
                 participantManager.changeDominantSpeaker(roomEvent.newDominantSpeakerSid)
@@ -233,7 +234,7 @@ class RoomViewModel(
         when (remoteParticipantEvent) {
             is RemoteParticipantConnected -> {
                 addParticipant(remoteParticipantEvent.participant)
-                dataTrackLayer.remoteParticipantConnected(remoteParticipantEvent)
+                orcana.remoteParticipantConnected(remoteParticipantEvent)
             }
             is VideoTrackUpdated -> {
                 participantManager.updateParticipantVideoTrack(remoteParticipantEvent.sid,
@@ -255,6 +256,7 @@ class RoomViewModel(
                 participantManager.muteParticipant(remoteParticipantEvent.sid,
                         remoteParticipantEvent.mute)
                 updateParticipantViewState()
+                orcana.muteRemoteParticipant(remoteParticipantEvent);
             }
             is NetworkQualityLevelChange -> {
                 participantManager.updateNetworkQuality(remoteParticipantEvent.sid,
@@ -264,9 +266,9 @@ class RoomViewModel(
             is RemoteParticipantDisconnected -> {
                 participantManager.removeParticipant(remoteParticipantEvent.sid)
                 updateParticipantViewState()
-                dataTrackLayer.remoteParticipantDisconnected(remoteParticipantEvent)
+                orcana.remoteParticipantDisconnected(remoteParticipantEvent)
             }
-            is RemoteParticipantEvent.OnDataTrackSubscribed -> dataTrackLayer.onDataTrackSubscribed(remoteParticipantEvent)
+            is RemoteParticipantEvent.OnDataTrackSubscribed -> orcana.onDataTrackSubscribed(remoteParticipantEvent)
         }
     }
 
@@ -327,7 +329,7 @@ class RoomViewModel(
         updateParticipantViewState()
     }
 
-    private fun updateParticipantViewState() {
+    fun updateParticipantViewState() {
         setState {
             it.copy(
                     participantThumbnails = participantManager.participantThumbnails,

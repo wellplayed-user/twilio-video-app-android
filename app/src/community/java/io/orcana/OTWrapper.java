@@ -14,15 +14,23 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
+
 import com.google.zxing.WriterException;
 import com.twilio.video.RemoteAudioTrack;
 import com.twilio.video.RemoteAudioTrackPublication;
+import com.twilio.video.RemoteDataTrack;
+import com.twilio.video.RemoteDataTrackPublication;
 import com.twilio.video.RemoteParticipant;
+import com.twilio.video.RemoteVideoTrack;
+import com.twilio.video.RemoteVideoTrackPublication;
 import com.twilio.video.Room;
+import com.twilio.video.TwilioException;
 import com.twilio.video.app.R;
 import com.twilio.video.app.data.Preferences;
 import com.twilio.video.app.databinding.RoomActivityBinding;
 import com.twilio.video.app.ui.room.RoomActivity;
+import com.twilio.video.app.ui.room.RoomEvent;
 
 import timber.log.Timber;
 
@@ -67,19 +75,17 @@ public class OTWrapper implements MotionMenu {
 
         audioManager = (AudioManager) roomActivity.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
         maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
-        volumeMidButtonClick(false);
 
 //        this.menuController = new MenuController(roomActivity, this, binding.cursorView);
         this.buttonManager = new ButtonManager();
         setupUI(sharedPreferences);
 
         dataTrackLayer = new DataTrackLayer(this, roomActivity, binding);
+        roomActivity.getRoomViewModel().setOrcana(this);
 
         // Hack to connect to room without button clicks
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(() -> {
-//            roomActivity.switchCamera();
-//            roomActivity.toggleLocalVideo();
             binding.joinO.performClick();
         }, 1500);
     }
@@ -89,15 +95,15 @@ public class OTWrapper implements MotionMenu {
             binding.QRCodeLayout.setVisibility(View.VISIBLE);
             binding.qrContinue.setOnClickListener(this::hideQRCodeLayout);
 
-            try {
-                Editable text = binding.joinRoom.roomName.getText();
-                if (text != null) {
-                    String caseID = text.toString();
+            Editable text = binding.joinRoom.roomName.getText();
+            if (text != null) {
+                String caseID = text.toString();
+                try {
                     Bitmap bitmap = QRCodeGenerator.getQRCodeImage(caseID, 512, 512);
                     binding.QRCodeView.setImageBitmap(bitmap);
+                } catch (WriterException e) {
+                    e.printStackTrace();
                 }
-            } catch (WriterException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -182,15 +188,25 @@ public class OTWrapper implements MotionMenu {
         }
     }
 
-    void toggleRemoteAudioTrackPlayback(boolean b){
+    private boolean isRemoteAudioTrackPlaybackEnabled = true;
+    void enableRemoteAudioTrackPlayback(boolean b){
+        if(isRemoteAudioTrackPlaybackEnabled == b) return;
+        isRemoteAudioTrackPlaybackEnabled = b;
+
         Room r = roomActivity.getRoomManager().getRoom();
         if(r != null){
             for (RemoteParticipant rp : r.getRemoteParticipants()) {
-                for (RemoteAudioTrackPublication ratp : rp.getRemoteAudioTracks()) {
-                    RemoteAudioTrack rat = ratp.getRemoteAudioTrack();
-                    if(rat != null)
-                        rat.enablePlayback(b);
-                }
+                enableRemoteParticipantAudioTrackPlayback(b, rp);
+            }
+        }
+    }
+
+    void enableRemoteParticipantAudioTrackPlayback(boolean b, RemoteParticipant rp){
+        for (RemoteAudioTrackPublication ratp : rp.getRemoteAudioTracks()) {
+            RemoteAudioTrack rat = ratp.getRemoteAudioTrack();
+            if(rat != null){
+                Timber.d("setting audio playback of %s to %s", rp.getIdentity(), b);
+                rat.enablePlayback(b);
             }
         }
     }
@@ -202,11 +218,11 @@ public class OTWrapper implements MotionMenu {
         this.binding.volumeMid.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeLoud.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMax.setImageResource(R.drawable.ic_volume_down_gray_24px);
-        toggleRemoteAudioTrackPlayback(false);
+        enableRemoteAudioTrackPlayback(false);
     }
 
     void volumeMinButtonClick() {
-        toggleRemoteAudioTrackPlayback(true);
+        enableRemoteAudioTrackPlayback(true);
         this.binding.volumeMute.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMin.setImageResource(R.drawable.ic_volume_down_green_24px);
         this.binding.volumeMid.setImageResource(R.drawable.ic_volume_down_gray_24px);
@@ -220,7 +236,7 @@ public class OTWrapper implements MotionMenu {
     }
 
     void volumeMidButtonClick(boolean showUI) {
-        toggleRemoteAudioTrackPlayback(true);
+        enableRemoteAudioTrackPlayback(true);
         this.binding.volumeMute.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMin.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMid.setImageResource(R.drawable.ic_volume_down_green_24px);
@@ -234,7 +250,7 @@ public class OTWrapper implements MotionMenu {
     }
 
     void volumeLoudButtonClick() {
-        toggleRemoteAudioTrackPlayback(true);
+        enableRemoteAudioTrackPlayback(true);
         this.binding.volumeMute.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMin.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMid.setImageResource(R.drawable.ic_volume_down_gray_24px);
@@ -244,7 +260,7 @@ public class OTWrapper implements MotionMenu {
     }
 
     void volumeMaxButtonClick() {
-        toggleRemoteAudioTrackPlayback(true);
+        enableRemoteAudioTrackPlayback(true);
         this.binding.volumeMute.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMin.setImageResource(R.drawable.ic_volume_down_gray_24px);
         this.binding.volumeMid.setImageResource(R.drawable.ic_volume_down_gray_24px);
@@ -274,5 +290,60 @@ public class OTWrapper implements MotionMenu {
         binding.joinO.setVisibility(joinLogoutButtonState);
         binding.disconnectO.setVisibility(disconnectButtonState);
         binding.logoutO.setVisibility(joinLogoutButtonState);
+    }
+
+    // Room Events
+    public void connected(RoomEvent.Connected connectedEvent){
+        Timber.d("Connected Event: %s", connectedEvent.toString());
+
+        dataTrackLayer.connected(connectedEvent);
+
+        if(DeviceInfo.isTablet()){
+            volumeMuteButtonClick();
+            binding.localAudio.performClick();
+        } else {
+            volumeMidButtonClick(false);
+        }
+    }
+
+    public void disconnected(RoomEvent.Disconnected roomEvent){
+        Timber.d("Disconnected Event: %s", roomEvent.toString());
+        dataTrackLayer.disconnected(roomEvent);
+    }
+
+    public void remoteParticipantConnected(RoomEvent.RemoteParticipantEvent.RemoteParticipantConnected remoteParticipantConnectedEvent){
+        Timber.d("Remote Participant Connected Event: %s", remoteParticipantConnectedEvent.toString());
+        RemoteParticipant rp = (RemoteParticipant)remoteParticipantConnectedEvent.getParticipant();
+        Timber.d("%s connected", rp.getIdentity());
+
+        enableRemoteParticipantAudioTrackPlayback(isRemoteAudioTrackPlaybackEnabled, rp);
+
+        dataTrackLayer.remoteParticipantConnected(remoteParticipantConnectedEvent);
+    }
+
+    public void remoteParticipantDisconnected(RoomEvent.RemoteParticipantEvent.RemoteParticipantDisconnected remoteParticipantDisconnected){
+        Timber.d("Participant Disconnected Event: %s", remoteParticipantDisconnected.toString());
+        dataTrackLayer.remoteParticipantDisconnected(remoteParticipantDisconnected);
+    }
+
+    public void onDataTrackSubscribed(RoomEvent.RemoteParticipantEvent.OnDataTrackSubscribed OnDataTrackSubscribedData){
+        dataTrackLayer.onDataTrackSubscribed(OnDataTrackSubscribedData);
+    }
+
+    public void muteRemoteParticipant(RoomEvent.RemoteParticipantEvent.MuteRemoteParticipant muteRemoteParticipant){
+        RemoteParticipant remoteParticipant = null;
+        for (RemoteParticipant rp : roomActivity.getRoomManager().getRoom().getRemoteParticipants()) {
+            if (rp.getSid().equals(muteRemoteParticipant.getSid())) {
+                remoteParticipant = rp;
+                break;
+            }
+        }
+
+        if (remoteParticipant == null) {
+            Timber.d("Could not find remote participant with SID %s", muteRemoteParticipant.getSid());
+        } else {
+            Timber.d("updating %s's audio playback", remoteParticipant.getIdentity());
+            enableRemoteParticipantAudioTrackPlayback(isRemoteAudioTrackPlaybackEnabled, remoteParticipant);
+        }
     }
 }

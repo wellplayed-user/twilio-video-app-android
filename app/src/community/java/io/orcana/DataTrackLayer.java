@@ -56,7 +56,6 @@ public class DataTrackLayer {
         this.annotationView = binding.annotationView;
         this.screenshotView = binding.screenshotView;
 
-        roomActivity.getRoomViewModel().setDataTrackLayer(this);
         // Start the thread where data messages are received
         dataTrackMessageThread.start();
         dataTrackMessageThreadHandler = new Handler(dataTrackMessageThread.getLooper());
@@ -70,33 +69,26 @@ public class DataTrackLayer {
     }
 
     public void connected(RoomEvent.Connected connectedEvent){
-        Timber.d("Connected Event: %s", connectedEvent.toString());
 //        Timber.d("Start sending messages?");
 
         this.room = connectedEvent.getRoom();
 
-        for (RemoteParticipant remoteParticipant : room.getRemoteParticipants()) {
-            addRemoteParticipant(remoteParticipant);
+        for (RemoteParticipant rp : room.getRemoteParticipants()) {
+            addRemoteParticipant(rp);
         }
     }
 
     public void disconnected(RoomEvent.Disconnected roomEvent){
-        Timber.d("Disconnected Event: %s", roomEvent.toString());
         disconnectFromRoom();
     }
 
     public void remoteParticipantConnected(RoomEvent.RemoteParticipantEvent.RemoteParticipantConnected remoteParticipantConnectedEvent){
-        Timber.d("Remote Participant Connected Event: %s", remoteParticipantConnectedEvent.toString());
-        Timber.d("%s connected", remoteParticipantConnectedEvent.getParticipant().getIdentity());
         addRemoteParticipant((RemoteParticipant) remoteParticipantConnectedEvent.getParticipant());
     }
 
     public void remoteParticipantDisconnected(RoomEvent.RemoteParticipantEvent.RemoteParticipantDisconnected remoteParticipantDisconnected){
-        Timber.d("Participant Disconnected Event: %s", remoteParticipantDisconnected.toString());
-
         RemoteParticipant remoteParticipant = null;
-        List<RemoteParticipant> remoteParticipantList = Objects.requireNonNull(roomManager.getRoom()).getRemoteParticipants();
-        for (RemoteParticipant rp : remoteParticipantList) {
+        for (RemoteParticipant rp : room.getRemoteParticipants()) {
             if (rp.getSid().equals(remoteParticipantDisconnected.getSid())) {
                 remoteParticipant = rp;
                 break;
@@ -187,42 +179,75 @@ public class DataTrackLayer {
                     annotationView.handleScreenshot(annotationWrapperJsonObject.getJSONObject("screenshot"), screenshotView);
                     break;
                 case "ADMIN":
-                    String identity = annotationWrapperJsonObject.getString("identity");
+                    String identity;
+                    String caseCreatorSid;
                     String action = annotationWrapperJsonObject.getString("action");
-                    //  Timber.d("Identity: %s", room.getLocalParticipant().getIdentity());
-                    LocalParticipant localParticipant = room.getLocalParticipant();
-                    if(action.equals("broadcastSelectedParticipant")){
-                        String caseCreatorSid = annotationWrapperJsonObject.getString("caseCreatorSid");
-                        ParticipantManager participantManager = roomActivity.getRoomViewModel().getParticipantManager();
-                        if(identity.equals(localParticipant.getSid())){
-                            participantManager.changePinnedParticipant(caseCreatorSid);
-                        } else {
-                            participantManager.changePinnedParticipant(identity);
-                        }
-
-                        if(participantManager.existingPin() == null){
-                            participantManager.changePinnedParticipant(caseCreatorSid);
-                        }
-                    } else if(identity.equals(localParticipant.getIdentity())){
-                        switch (action){
-                            case "mute":
-                                this.roomActivity.runOnUiThread(this.binding.localAudio::performClick);
+                    switch (action){
+                        case "roomState":
+                            identity = annotationWrapperJsonObject.getString("identity");
+                            if(!identity.equals(room.getLocalParticipant().getIdentity())){
                                 break;
-                            case "disable":
-                                this.roomActivity.runOnUiThread(this.binding.localVideo::performClick);
+                            }
+                            caseCreatorSid = annotationWrapperJsonObject.getString("caseCreatorSid");
+                            if(annotationWrapperJsonObject.has("pinnedParticipantSid")){
+                                String pinnedParticipantSid = annotationWrapperJsonObject.getString("pinnedParticipantSid");
+                                pinParticipant(caseCreatorSid, pinnedParticipantSid);
+                            } else {
+                                pinParticipant(caseCreatorSid, caseCreatorSid);
+                            }
+                            break;
+                        case "broadcastSelectedParticipant":
+                            identity = annotationWrapperJsonObject.getString("identity");
+                            caseCreatorSid = annotationWrapperJsonObject.getString("caseCreatorSid");
+                            pinParticipant(caseCreatorSid, identity);
+                            break;
+                        case "mute":
+                            identity = annotationWrapperJsonObject.getString("identity");
+                            if(!identity.equals(room.getLocalParticipant().getIdentity())){
                                 break;
-                            case "kick":
-                                this.roomActivity.runOnUiThread(this.binding.disconnectO::performClick);
+                            }
+                            this.roomActivity.runOnUiThread(this.binding.localAudio::performClick);
+                            break;
+                        case "disable":
+                            identity = annotationWrapperJsonObject.getString("identity");
+                            if(!identity.equals(room.getLocalParticipant().getIdentity())){
                                 break;
-                            case "toggle_glasses":
-                                this.roomActivity.runOnUiThread(this.orcana::showMenu);
+                            }
+                            this.roomActivity.runOnUiThread(this.binding.localVideo::performClick);
+                            break;
+                        case "kick":
+                            identity = annotationWrapperJsonObject.getString("identity");
+                            if(!identity.equals(room.getLocalParticipant().getIdentity())){
                                 break;
-                        }
+                            }
+                            this.roomActivity.runOnUiThread(this.binding.disconnectO::performClick);
+                            break;
+                        case "toggle_glasses":
+                            identity = annotationWrapperJsonObject.getString("identity");
+                            if(!identity.equals(room.getLocalParticipant().getIdentity())){
+                                break;
+                            }
+                            this.roomActivity.runOnUiThread(this.orcana::showMenu);
+                            break;
                     }
                     break;
             }
         } catch (JSONException e) {
             Timber.e(e);
         }
+    }
+
+    private void pinParticipant(String caseCreatorSid, String sidToPin){
+        ParticipantManager participantManager = roomActivity.getRoomViewModel().getParticipantManager();
+        if(sidToPin.equals(room.getLocalParticipant().getSid())){
+            participantManager.changePinnedParticipant(caseCreatorSid);
+        } else {
+            participantManager.changePinnedParticipant(sidToPin);
+        }
+
+        if(participantManager.existingPin() == null){
+            participantManager.changePinnedParticipant(caseCreatorSid);
+        }
+        roomActivity.getRoomViewModel().updateParticipantViewState();
     }
 }
