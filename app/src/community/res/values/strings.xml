@@ -28,7 +28,7 @@
     <string name="logo_content_description">Orcana Logo</string>
     <string name="footer_content_description">footer</string>
     <string name="done">DONE</string>
-    <string name="TermsCheckbox">I accept the <a href="https://app.orcana.io/terms_of_service">terms of service</a>\n and <a href="https://app.orcana.io/privacy_policy">privacy policy</a></string>
+    <string name="TermsCheckbox">I accept the <a href="https://app.orcana.io/terms_of_service">terms of service</a> and <a href="https://app.orcana.io/privacy_policy">privacy policy</a></string>
 
     <string name="default_user_name">AR Glasses</string>
 <!--    <string name="default_room_name">xmosd</string>-->

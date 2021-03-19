@@ -19,6 +19,7 @@
             android:layout_gravity="center"
             android:background="@drawable/tablet_login_input_background"
             android:elevation="1dp"
+            android:padding="60dp"
             android:translationY="-40dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
