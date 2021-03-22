@@ -15,10 +15,7 @@
         to join Orcana. Proceed when the AR \n
         glasses are connected.
     </string>
-    <string name="qr_title">
-        Connect the \n
-        AR Glasses
-    </string>
+    <string name="qr_title">Connect the AR Glasses</string>
     <string name="input_title">Sign into case</string>
     <string name="qr_input_title">Two ways to join a session:</string>
     <string name="scan_qr_button">Scan QR Code</string>
