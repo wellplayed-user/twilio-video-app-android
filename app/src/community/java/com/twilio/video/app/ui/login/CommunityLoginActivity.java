@@ -18,6 +18,7 @@ package com.twilio.video.app.ui.login;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
@@ -29,6 +30,7 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 
 import com.twilio.video.app.R;
@@ -91,10 +93,13 @@ public class CommunityLoginActivity extends BaseActivity {
 
             binding.login.setOnClickListener(this::loginClicked);
             binding.scanButton.setOnClickListener(this::scanClicked);
-            binding.typeInfoButton.setOnClickListener(this::typeInfoSwitchClicked);
+
+            binding.manualEntryLink.setOnClickListener(this::typeInfoSwitchClicked);
 
             binding.LoginInfo.setVisibility(View.GONE);
             binding.ButtonLogin.setVisibility(View.VISIBLE);
+
+            binding.scanButton.requestFocus();
 
             setContentView(binding.getRoot());
         } else {
@@ -175,6 +180,10 @@ public class CommunityLoginActivity extends BaseActivity {
     private void typeInfoSwitchClicked(View view){
         binding.ButtonLogin.setVisibility(View.GONE);
         binding.LoginInfo.setVisibility(View.VISIBLE);
+
+        binding.caseId.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(binding.caseId, InputMethodManager.SHOW_IMPLICIT);
     }
 
     void onCheckedChanged(CompoundButton var1, boolean var2){

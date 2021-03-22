@@ -20,11 +20,11 @@
         AR Glasses
     </string>
     <string name="input_title">Sign into case</string>
-    <string name="qr_input_title">Scan QR Code to Join</string>
-    <string name="scan_qr_button">Scan</string>
+    <string name="qr_input_title">Two ways to join a session:</string>
+    <string name="scan_qr_button">Scan QR Code</string>
     <string name="qr_code_view">QRCode View</string>
     <string name="type_info_text">Type Info</string>
-    <string name="type_info_button">Switch</string>
+    <string name="manual_entry_link_text">Or Manually Enter Case ID</string>
     <string name="logo_content_description">Orcana Logo</string>
     <string name="footer_content_description">footer</string>
     <string name="done">DONE</string>
@@ -36,7 +36,7 @@
     <string name="login_screen_caseid">Case ID</string>
     <string name="passcode">25048049744075</string>
     <string name="login_screen_error_title_orcana">Uh-oh!</string>
-    <string name="login_screen_auth_error_desc_CASE_DOES_NOT_EXIST">This Case number is not valid, please contact your Medical Device Rep for the correct Case number.</string>
+    <string name="login_screen_auth_error_desc_CASE_DOES_NOT_EXIST">This Case ID is not valid, please try again or contact your medical device rep for the correct Case ID.</string>
     <string name="login_screen_auth_error_desc_CASE_IS_NOT_ACTIVE">This session has not started. Please contact your Medical Device Rep to begin.</string>
     <string name="screenshot">Screenshot View</string>
     <string name="mute">mute</string>
