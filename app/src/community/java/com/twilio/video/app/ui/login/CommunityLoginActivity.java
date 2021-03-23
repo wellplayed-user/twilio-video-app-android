@@ -24,14 +24,18 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
+import android.text.style.UnderlineSpan;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import com.twilio.video.app.R;
 import com.twilio.video.app.auth.Authenticator;
@@ -95,6 +99,7 @@ public class CommunityLoginActivity extends BaseActivity {
             binding.scanButton.setOnClickListener(this::scanClicked);
 
             binding.manualEntryLink.setOnClickListener(this::typeInfoSwitchClicked);
+            binding.manualEntryLink.setOnFocusChangeListener(this::onLinkHover);
 
             binding.LoginInfo.setVisibility(View.GONE);
             binding.ButtonLogin.setVisibility(View.VISIBLE);
@@ -183,6 +188,19 @@ public class CommunityLoginActivity extends BaseActivity {
         binding.caseId.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(binding.caseId, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    private void onLinkHover(View view, boolean b){
+        TextView tv = (TextView)view;
+        if(b){
+            Timber.d("Enter");
+            SpannableString content = new SpannableString(getString(R.string.manual_entry_link_text));
+            content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+            tv.setText(content);
+        } else {
+            Timber.d("Exit");
+            tv.setText(getString(R.string.manual_entry_link_text));
+        }
     }
 
     void onCheckedChanged(CompoundButton var1, boolean var2){
