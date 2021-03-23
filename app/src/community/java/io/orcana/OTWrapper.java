@@ -94,7 +94,6 @@ public class OTWrapper implements MotionMenu {
     public void onStart(){
         if(DeviceInfo.isTablet()){
             roomActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            roomActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
             binding.QRCodeLayout.setVisibility(View.VISIBLE);
             binding.qrContinue.setOnClickListener(this::hideQRCodeLayout);

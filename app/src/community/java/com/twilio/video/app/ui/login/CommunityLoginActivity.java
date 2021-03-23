@@ -104,7 +104,6 @@ public class CommunityLoginActivity extends BaseActivity {
             setContentView(binding.getRoot());
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
             tabletBinding = TabletLoginActivityBinding.inflate(getLayoutInflater());
             tabletBinding.name.addTextChangedListener(textWatcher);
