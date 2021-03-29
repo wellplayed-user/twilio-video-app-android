@@ -303,7 +303,10 @@ public class OTWrapper implements MotionMenu {
 
         if(DeviceInfo.isTablet()){
             volumeMuteButtonClick();
-            binding.localAudio.performClick();
+            if(!roomActivity.roomManager.getLocalParticipantManager().isAudioMuted()){
+                binding.localAudio.performClick();
+            }
+            roomActivity.roomManager.disableLocalAudio();
         } else {
             volumeMidButtonClick(false);
         }

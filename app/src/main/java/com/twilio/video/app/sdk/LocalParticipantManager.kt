@@ -61,7 +61,7 @@ class LocalParticipantManager(
             field = value
             roomManager.sendRoomEvent(if (value == null) ScreenCaptureOff else ScreenCaptureOn)
         }
-    private var isAudioMuted = false
+    var isAudioMuted = false
     private var isVideoMuted = false
     internal val localVideoTrackNames: MutableMap<String, String> = HashMap()
 

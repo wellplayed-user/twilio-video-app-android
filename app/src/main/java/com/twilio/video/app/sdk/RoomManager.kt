@@ -55,8 +55,7 @@ class RoomManager(
      */
     private val roomChannel: Channel<RoomEvent> = Channel(Channel.BUFFERED)
     val roomReceiveChannel: ReceiveChannel<RoomEvent> = roomChannel
-    @VisibleForTesting(otherwise = PRIVATE)
-    internal var localParticipantManager: LocalParticipantManager =
+    var localParticipantManager: LocalParticipantManager =
             LocalParticipantManager(context, this, sharedPreferences)
     var room: Room? = null
 
