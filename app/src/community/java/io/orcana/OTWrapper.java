@@ -36,6 +36,9 @@ import com.twilio.video.app.ui.room.RoomEvent;
 import timber.log.Timber;
 
 public class OTWrapper implements MotionMenu {
+    public static final boolean production = false;
+    public static final String version = "v0.0" + (production ? "" : "-Staging");
+
     private final RoomActivity roomActivity;
     private final RoomActivityBinding binding;
 
@@ -306,7 +309,6 @@ public class OTWrapper implements MotionMenu {
             if(!roomActivity.roomManager.getLocalParticipantManager().isAudioMuted()){
                 binding.localAudio.performClick();
             }
-            roomActivity.roomManager.disableLocalAudio();
         } else {
             volumeMidButtonClick(false);
         }

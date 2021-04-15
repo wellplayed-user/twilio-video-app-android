@@ -32,6 +32,7 @@ import com.twilio.video.app.data.api.model.Topology.GROUP
 import com.twilio.video.app.data.api.model.Topology.GROUP_SMALL
 import com.twilio.video.app.data.api.model.Topology.PEER_TO_PEER
 import com.twilio.video.app.security.SecurePreferences
+import io.orcana.OTWrapper
 import retrofit2.HttpException
 import timber.log.Timber
 
@@ -51,10 +52,11 @@ class AuthServiceRepository(
         getPasscode(passcode)?.let { passcode ->
             val (requestBody, url) = buildRequest(passcode, identity, roomName)
 
-            // Production URL
-            val orcanaUrl = "https://app.orcana.io/api/v1/token";
-            // Dev URL
-//             val orcanaUrl = "https://staging.app.orcana.io/api/v1/token";
+            val orcanaUrl = if(OTWrapper.production){
+                "https://app.orcana.io/api/v1/token"
+            } else {
+                "https://staging.app.orcana.io/api/v1/token"
+            }
 
             try {
                 authService.getToken(orcanaUrl, requestBody).let { response ->

@@ -28,7 +28,6 @@ import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.UnderlineSpan;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -51,6 +50,7 @@ import com.twilio.video.app.ui.room.RoomActivity;
 import com.twilio.video.app.util.InputUtils;
 
 import io.orcana.DeviceInfo;
+import io.orcana.OTWrapper;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import javax.inject.Inject;
@@ -106,6 +106,8 @@ public class CommunityLoginActivity extends BaseActivity {
 
             binding.scanButton.requestFocus();
 
+            binding.versionHUD.setText(OTWrapper.version);
+
             setContentView(binding.getRoot());
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -124,6 +126,8 @@ public class CommunityLoginActivity extends BaseActivity {
 
 //            tabletBinding.QRCodeLayout.setVisibility(View.GONE);
 //            tabletBinding.TypeInfoLayout.setVisibility(View.VISIBLE);
+
+            tabletBinding.versionTab.setText(OTWrapper.version);
 
             setContentView(tabletBinding.getRoot());
         }
