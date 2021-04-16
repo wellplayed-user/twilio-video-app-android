@@ -37,7 +37,7 @@ import timber.log.Timber;
 
 public class OTWrapper implements MotionMenu {
     public static final boolean production = false;
-    public static final String version = "v0.0" + (production ? "" : "-Staging");
+    public static final String version = "784260a" + (production ? "" : "-Staging");
 
     private final RoomActivity roomActivity;
     private final RoomActivityBinding binding;
