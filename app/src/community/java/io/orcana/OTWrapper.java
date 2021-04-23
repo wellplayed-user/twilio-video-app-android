@@ -29,8 +29,8 @@ import com.twilio.video.app.ui.room.RoomEvent;
 import timber.log.Timber;
 
 public class OTWrapper implements MotionMenu {
-    public static final boolean production = true;
-    public static final String version = "784260a" + (production ? "" : "-Staging");
+    public static boolean production = true;
+    public static String version() {return "784260a" + (production ? "" : "-Staging");}
 
     private final RoomActivity roomActivity;
     private final RoomActivityBinding binding;

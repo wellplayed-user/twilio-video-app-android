@@ -106,7 +106,7 @@ public class CommunityLoginActivity extends BaseActivity {
 
             binding.scanButton.requestFocus();
 
-            binding.versionHUD.setText(OTWrapper.version);
+            binding.versionHUD.setText(OTWrapper.version());
 
             setContentView(binding.getRoot());
         } else {
@@ -129,7 +129,14 @@ public class CommunityLoginActivity extends BaseActivity {
 //            tabletBinding.QRCodeLayout.setVisibility(View.GONE);
 //            tabletBinding.TypeInfoLayout.setVisibility(View.VISIBLE);
 
-            tabletBinding.versionTab.setText(OTWrapper.version);
+            tabletBinding.versionTab.setText(OTWrapper.version());
+            tabletBinding.versionTab.setLongClickable(true);
+            tabletBinding.versionTab.setOnLongClickListener(v -> {
+                OTWrapper.production = !OTWrapper.production;
+                Timber.d("Production %s, %s", OTWrapper.production, OTWrapper.version());
+                tabletBinding.versionTab.setText(OTWrapper.version());
+                return false;
+            });
 
             setContentView(tabletBinding.getRoot());
         }

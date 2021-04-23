@@ -255,7 +255,7 @@
             android:paddingStart="25dp"
             android:paddingEnd="25dp"
             android:textColor="@color/orcanaBlack"
-            android:textSize="24sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
