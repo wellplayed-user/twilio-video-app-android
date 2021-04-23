@@ -83,7 +83,7 @@ public class MenuController implements SensorEventListener {
 //                break;
 
             case Sensor.STRING_TYPE_GRAVITY:
-                double currentTimeStamp = ((double) event.timestamp) * CursorView.nanoToSec;
+                double currentTimeStamp = ((double) event.timestamp) * SensorManagerWrapper.nanoToSec;
 
                 if(currentTimeStamp < waitTimeStamp){
                     return;
