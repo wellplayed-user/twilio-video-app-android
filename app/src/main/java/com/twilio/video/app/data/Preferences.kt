@@ -44,7 +44,7 @@ object Preferences {
             VideoDimensions.HD_1080P_VIDEO_DIMENSIONS
     )
     const val VIDEO_CAPTURE_RESOLUTION = "pref_video_capture_resolution"
-    const val VIDEO_CAPTURE_RESOLUTION_DEFAULT = "7"
+    const val VIDEO_CAPTURE_RESOLUTION_DEFAULT = "5"
     const val VERSION_NAME = "pref_version_name"
     const val VIDEO_LIBRARY_VERSION = "pref_video_library_version"
     const val LOGOUT = "pref_logout"

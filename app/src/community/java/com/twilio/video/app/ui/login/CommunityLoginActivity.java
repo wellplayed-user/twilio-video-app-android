@@ -30,7 +30,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.WindowInsets;
-import android.view.WindowInsetsController;
+//import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
@@ -110,7 +110,9 @@ public class CommunityLoginActivity extends BaseActivity {
 
             setContentView(binding.getRoot());
         } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            if(!DeviceInfo.isPhone()){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
 
             tabletBinding = TabletLoginActivityBinding.inflate(getLayoutInflater());
             tabletBinding.name.addTextChangedListener(textWatcher);
@@ -135,17 +137,17 @@ public class CommunityLoginActivity extends BaseActivity {
         if (authenticator.loggedIn()) startLobbyActivity();
 
         // Hide the status bar.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            final WindowInsetsController insetsController = getWindow().getInsetsController();
-            if (insetsController != null) {
-                insetsController.hide(WindowInsets.Type.statusBars());
-            }
-        } else {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            final WindowInsetsController insetsController = getWindow().getInsetsController();
+//            if (insetsController != null) {
+//                insetsController.hide(WindowInsets.Type.statusBars());
+//            }
+//        } else {
             getWindow().setFlags(
                     WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN
             );
-        }
+//        }
 
 //        final Handler handler = new Handler(Looper.getMainLooper());
 //        handler.postDelayed(() -> loginClicked(null), 3000);

@@ -3,13 +3,7 @@ package com.twilio.video.app.sdk
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import com.twilio.video.LocalAudioTrack
-import com.twilio.video.LocalParticipant
-import com.twilio.video.LocalTrackPublicationOptions
-import com.twilio.video.LocalVideoTrack
-import com.twilio.video.ScreenCapturer
-import com.twilio.video.TrackPriority
-import com.twilio.video.VideoFormat
+import com.twilio.video.*
 import com.twilio.video.app.R
 import com.twilio.video.app.data.Preferences.VIDEO_CAPTURE_RESOLUTION
 import com.twilio.video.app.data.Preferences.VIDEO_CAPTURE_RESOLUTION_DEFAULT
@@ -27,6 +21,8 @@ import com.twilio.video.app.util.CameraCapturerCompat
 import com.twilio.video.app.util.get
 import com.twilio.video.ktx.createLocalAudioTrack
 import com.twilio.video.ktx.createLocalVideoTrack
+import io.orcana.DeviceInfo
+import io.orcana.JorJinCameraCapturer
 import timber.log.Timber
 
 class LocalParticipantManager(
@@ -179,15 +175,29 @@ class LocalParticipantManager(
                 VIDEO_CAPTURE_RESOLUTION_DEFAULT).toInt()
         val videoFormat = VideoFormat(VIDEO_DIMENSIONS[dimensionsIndex], 30)
 
-        cameraCapturer = CameraCapturerCompat.newInstance(context)
-        cameraVideoTrack = cameraCapturer?.let { cameraCapturer ->
-            LocalVideoTrack.create(
+        if(DeviceInfo.isPhone())
+        {
+            cameraVideoTrack = LocalVideoTrack.create(
                     context,
                     true,
-                    cameraCapturer,
+                    JorJinCameraCapturer(context),
                     videoFormat,
-                    CAMERA_TRACK_NAME)
+                    CAMERA_TRACK_NAME
+            )
         }
+        else
+        {
+            cameraCapturer = CameraCapturerCompat.newInstance(context)
+            cameraVideoTrack = cameraCapturer?.let { cameraCapturer ->
+                LocalVideoTrack.create(
+                        context,
+                        true,
+                        cameraCapturer,
+                        videoFormat,
+                        CAMERA_TRACK_NAME)
+            }
+        }
+
         cameraVideoTrack?.let { cameraVideoTrack ->
             localVideoTrackNames[cameraVideoTrack.name] = context.getString(R.string.camera_video_track)
             publishCameraTrack(cameraVideoTrack)

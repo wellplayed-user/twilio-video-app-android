@@ -6,25 +6,31 @@ import timber.log.Timber;
 
 public final class DeviceInfo {
     private static final String DELIMITER = "$";
+    private static final String VuzixBrand = "vuzix";
+    private static final String LenovoBrand = "Lenovo";
+    private static final String SamsungBrand = "samsung";
 
     private DeviceInfo(){}
 
+    public static boolean is(String brand){
+        return brand().equals(brand);
+    }
+
     public static boolean isVuzix(){
-        Boolean result = brand().equals("vuzix");
-//        Timber.d("Is Vuzix: %s ", result);
-        return result;
+//        Timber.d("Is Vuzix: %s ", is(VuzixBrand));
+        return is(VuzixBrand);
     }
 
     public static boolean isHeadset(){
         return isVuzix();
     }
-
     public static boolean isTablet(){
         return !isHeadset();
     }
+    public static boolean isPhone(){ return is(SamsungBrand); }
 
     public static String brand() {
-//        Timber.d("Device Brand: %s ", Build.BRAND);
+        Timber.d("Device Brand: %s ", Build.BRAND);
         return Build.BRAND;
     }
 

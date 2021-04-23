@@ -5,28 +5,21 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
-import android.os.Build;
+//import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
+//import android.view.WindowInsets;
+//import android.view.WindowInsetsController;
 import android.view.WindowManager;
-
-import androidx.annotation.NonNull;
 
 import com.google.zxing.WriterException;
 import com.twilio.video.RemoteAudioTrack;
 import com.twilio.video.RemoteAudioTrackPublication;
-import com.twilio.video.RemoteDataTrack;
-import com.twilio.video.RemoteDataTrackPublication;
 import com.twilio.video.RemoteParticipant;
-import com.twilio.video.RemoteVideoTrack;
-import com.twilio.video.RemoteVideoTrackPublication;
 import com.twilio.video.Room;
-import com.twilio.video.TwilioException;
 import com.twilio.video.app.R;
 import com.twilio.video.app.data.Preferences;
 import com.twilio.video.app.databinding.RoomActivityBinding;
@@ -36,7 +29,7 @@ import com.twilio.video.app.ui.room.RoomEvent;
 import timber.log.Timber;
 
 public class OTWrapper implements MotionMenu {
-    public static final boolean production = false;
+    public static final boolean production = true;
     public static final String version = "784260a" + (production ? "" : "-Staging");
 
     private final RoomActivity roomActivity;
@@ -65,17 +58,17 @@ public class OTWrapper implements MotionMenu {
         this.window.setAttributes(layoutparams);
 
         // Hide the status bar.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            final WindowInsetsController insetsController = this.window.getInsetsController();
-            if (insetsController != null) {
-                insetsController.hide(WindowInsets.Type.statusBars());
-            }
-        } else {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            final WindowInsetsController insetsController = this.window.getInsetsController();
+//            if (insetsController != null) {
+//                insetsController.hide(WindowInsets.Type.statusBars());
+//            }
+//        } else {
             this.window.setFlags(
                     WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN
             );
-        }
+//        }
 
         audioManager = (AudioManager) roomActivity.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
         maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
@@ -98,17 +91,19 @@ public class OTWrapper implements MotionMenu {
         if(DeviceInfo.isTablet()){
             roomActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-            binding.QRCodeLayout.setVisibility(View.VISIBLE);
-            binding.qrContinue.setOnClickListener(this::hideQRCodeLayout);
+            if(!DeviceInfo.isPhone()) {
+                binding.QRCodeLayout.setVisibility(View.VISIBLE);
+                binding.qrContinue.setOnClickListener(this::hideQRCodeLayout);
 
-            Editable text = binding.joinRoom.roomName.getText();
-            if (text != null) {
-                String caseID = text.toString();
-                try {
-                    Bitmap bitmap = QRCodeGenerator.getQRCodeImage(caseID, 512, 512);
-                    binding.QRCodeView.setImageBitmap(bitmap);
-                } catch (WriterException e) {
-                    e.printStackTrace();
+                Editable text = binding.joinRoom.roomName.getText();
+                if (text != null) {
+                    String caseID = text.toString();
+                    try {
+                        Bitmap bitmap = QRCodeGenerator.getQRCodeImage(caseID, 512, 512);
+                        binding.QRCodeView.setImageBitmap(bitmap);
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

@@ -37,8 +37,8 @@ afterEvaluate {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '30.0.2'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
 
     buildFeatures {
         viewBinding true
@@ -58,8 +58,8 @@ android {
     defaultConfig {
         applicationId "io.orcana.app"
 
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion 24
+        targetSdkVersion 27
 
         versionName '0.0.0'
         versionCode versionCodeProperty
@@ -231,6 +231,8 @@ dependencies {
 
     implementation "com.google.zxing:core:3.4.1"
     implementation 'com.google.zxing:javase:3.4.1'
+
+    implementation files('libs/jjsdk.aar')
 }
 
 def getLocalProperty(key) {
