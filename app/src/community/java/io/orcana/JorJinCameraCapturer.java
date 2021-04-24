@@ -92,8 +92,6 @@ public class JorJinCameraCapturer implements VideoCapturer, FrameListener {
 
     @Override
     public void onIncomingFrame(ByteBuffer byteBuffer, int width, int height, int format) {
-        Timber.d("onIncomingFrame!!");
-
         boolean dropFrame = width == 0 || height == 0;
 
         // Only capture the view if the dimensions have been established

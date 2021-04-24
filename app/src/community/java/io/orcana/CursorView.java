@@ -13,6 +13,8 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.twilio.video.app.R;
 
+import timber.log.Timber;
+
 public class CursorView extends View {
     static final double clickWait = 5000.0d; // In milliseconds
     public static final double resetTimeOffset = (clickWait/1000.0d) + 1.0d;
@@ -118,13 +120,9 @@ public class CursorView extends View {
         this.active = false;
         this.mSensorManagerWrapper.hide();
         invalidate();
-//        this.main.runOnUiThread(new Runnable() {
-//            public void run() {
-//                CursorView.this.invalidate();
-//            }
-//        });
     }
 
+    static final float CursorMovementResetOffset = 1000.f;
     public void show() {
         this.active = true;
         this.lastUpdate = -1.0d;
@@ -143,16 +141,16 @@ public class CursorView extends View {
                 float dy = this.y - newCursorPoint.y;
                 float sqrMag = (dx * dx) + (dy * dy);
 
-                if (sqrMag <= 20.0f) {
+                if (sqrMag <= CursorMovementResetOffset) {
                     if (currentTimeStamp > this.resetCursorTimeStamp) {
                         this.lastUpdate = -1.0D;
                     }
                 } else {
                     this.resetCursorTimeStamp = currentTimeStamp + resetTimeOffset;
-
-                    this.x = newCursorPoint.x;
-                    this.y = newCursorPoint.y;
                 }
+
+                this.x = newCursorPoint.x;
+                this.y = newCursorPoint.y;
                 invalidate();
             }
         });
