@@ -3,7 +3,6 @@ package io.orcana;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
-import android.view.SurfaceView;
 
 import com.jorjin.jjsdk.camera.CameraManager;
 import com.jorjin.jjsdk.camera.CameraParameter;
@@ -27,8 +26,8 @@ public class JorJinCameraCapturer implements VideoCapturer, FrameListener {
     private static final int ResolutionIndex = 2;
 
     private final AtomicBoolean started = new AtomicBoolean(false);
-    private final CameraManager cameraManager;
 
+    private CameraManager cameraManager;
     private CapturerObserver capturerObserver;
 
     public JorJinCameraCapturer(Context context) {
@@ -46,7 +45,8 @@ public class JorJinCameraCapturer implements VideoCapturer, FrameListener {
         cameraParameter.setPowerLineFrequency(CameraParameter.POWER_LINE_60HZ);
         this.cameraManager.setCameraParameter(cameraParameter);
 
-        this.cameraManager.setResolutionIndex(ResolutionIndex); // Index of Resolution list.
+        this.cameraManager.setResolutionIndex(ResolutionIndex);
+        this.cameraManager.startCamera(CameraManager.COLOR_FORMAT_RGBA);
     }
 
     @Override
@@ -77,7 +77,6 @@ public class JorJinCameraCapturer implements VideoCapturer, FrameListener {
         Timber.d("startCapture!!");
 
         this.started.set(true);
-        this.cameraManager.startCamera(CameraManager.COLOR_FORMAT_RGBA);
         this.capturerObserver.onCapturerStarted(true);
     }
 
@@ -86,13 +85,22 @@ public class JorJinCameraCapturer implements VideoCapturer, FrameListener {
         Timber.d("stopCapture!!");
 
         this.started.set(false);
-        this.cameraManager.stopCamera();
         this.capturerObserver.onCapturerStopped();
     }
 
     @Override
+    public void dispose() {
+        Timber.d("dispose!!");
+
+        if(this.cameraManager != null && this.cameraManager.isPreviewing()){
+            this.cameraManager.stopCamera();
+        }
+        this.cameraManager = null;
+    }
+
+    @Override
     public void onIncomingFrame(ByteBuffer byteBuffer, int width, int height, int format) {
-        boolean dropFrame = width == 0 || height == 0;
+        boolean dropFrame = width == 0 || height == 0 || !this.started.get();
 
         // Only capture the view if the dimensions have been established
         if (!dropFrame) {
@@ -106,15 +114,12 @@ public class JorJinCameraCapturer implements VideoCapturer, FrameListener {
             VideoFrame.Buffer videoBuffer = new Rgba8888Buffer(buffer ,width, height);
             VideoFrame videoFrame = new VideoFrame(videoBuffer, 0, captureTimeNs);
 
-            // Notify the listener
-            if (this.started.get()) {
-                this.capturerObserver.onFrameCaptured(videoFrame);
-                videoFrame.release();
-            }
+            this.capturerObserver.onFrameCaptured(videoFrame);
+            videoFrame.release();
         }
     }
 
-    public static Bitmap bitmapFromRgba(int width, int height, byte[] bytes) {
+    private static Bitmap bitmapFromRgba(int width, int height, byte[] bytes) {
         int[] pixels = new int[bytes.length / 4];
         int j = 0;
 

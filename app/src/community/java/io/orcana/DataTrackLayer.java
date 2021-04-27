@@ -2,22 +2,17 @@ package io.orcana;
 
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.view.View;
 import android.widget.ImageView;
 
-import com.twilio.video.LocalParticipant;
 import com.twilio.video.RemoteDataTrack;
 import com.twilio.video.RemoteDataTrackPublication;
 import com.twilio.video.RemoteParticipant;
 import com.twilio.video.Room;
 import com.twilio.video.app.participant.ParticipantManager;
-import com.twilio.video.app.sdk.RoomManager;
 import com.twilio.video.app.ui.room.RoomActivity;
 import com.twilio.video.app.ui.room.RoomEvent;
 
 import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.Objects;
 import com.twilio.video.app.databinding.RoomActivityBinding;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +26,6 @@ public class DataTrackLayer {
 
     private Room room;
     private final OTWrapper orcana;
-    private final RoomManager roomManager;
     private final RoomActivity roomActivity;
 
     private final RoomActivityBinding binding;
@@ -50,8 +44,7 @@ public class DataTrackLayer {
     public DataTrackLayer(OTWrapper otWrapper, RoomActivity roomActivity, RoomActivityBinding binding) {
         this.orcana = otWrapper;
         this.roomActivity = roomActivity;
-        this.roomManager = roomActivity.getRoomManager();
-        
+
         this.binding = binding;
         this.annotationView = binding.annotationView;
         this.screenshotView = binding.screenshotView;
