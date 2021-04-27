@@ -86,7 +86,7 @@ public class JorJinCameraCapturer implements VideoCapturer, FrameListener {
         Timber.d("stopCapture!!");
 
         this.started.set(false);
-//        this.cameraManager.stopCamera();
+        this.cameraManager.stopCamera();
         this.capturerObserver.onCapturerStopped();
     }
 
