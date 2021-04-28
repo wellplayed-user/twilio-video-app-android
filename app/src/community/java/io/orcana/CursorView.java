@@ -33,7 +33,7 @@ public class CursorView extends View {
     float y;
     long startGaze;
     double lastUpdate;
-    double resetCursorTimeStamp;
+//    double resetCursorTimeStamp;
     IButtonManager buttonManager;
 
     public CursorView(Context context) {
@@ -107,6 +107,7 @@ public class CursorView extends View {
                         progress = (float) (dt / clickWait);
                         if (progress > 1.0f) {
                             this.buttonManager.clickButton(this.buttonId);
+                            this.mSensorManagerWrapper.resetPoint();
                             this.startGaze = -1;
                         }
                     }
@@ -122,14 +123,14 @@ public class CursorView extends View {
         invalidate();
     }
 
-    static final float CursorMovementResetOffset = 1000.f;
+//    static final float CursorMovementResetOffset = 1000.f;
     public void show() {
         this.active = true;
-        this.lastUpdate = -1.0d;
+//        this.lastUpdate = -1.0d;
         this.mSensorManagerWrapper.show((currentTimeStamp, newCursorPoint) -> {
             if (this.lastUpdate < 0.0d) {
                 this.lastUpdate = currentTimeStamp;
-                this.resetCursorTimeStamp = currentTimeStamp + resetTimeOffset;
+//                this.resetCursorTimeStamp = currentTimeStamp + resetTimeOffset;
                 this.mSensorManagerWrapper.resetPoint();
                 return;
             }
@@ -137,17 +138,17 @@ public class CursorView extends View {
             double dt = currentTimeStamp - this.lastUpdate;
             this.lastUpdate = currentTimeStamp;
             if (dt <= 0.3d) {
-                float dx = this.x - newCursorPoint.x;
-                float dy = this.y - newCursorPoint.y;
-                float sqrMag = (dx * dx) + (dy * dy);
+//                float dx = this.x - newCursorPoint.x;
+//                float dy = this.y - newCursorPoint.y;
+//                float sqrMag = (dx * dx) + (dy * dy);
 
-                if (sqrMag <= CursorMovementResetOffset) {
-                    if (currentTimeStamp > this.resetCursorTimeStamp) {
-                        this.lastUpdate = -1.0D;
-                    }
-                } else {
-                    this.resetCursorTimeStamp = currentTimeStamp + resetTimeOffset;
-                }
+//                if (sqrMag <= CursorMovementResetOffset) {
+//                    if (currentTimeStamp > this.resetCursorTimeStamp) {
+//                        this.lastUpdate = -1.0D;
+//                    }
+//                } else {
+//                    this.resetCursorTimeStamp = currentTimeStamp + resetTimeOffset;
+//                }
 
                 this.x = newCursorPoint.x;
                 this.y = newCursorPoint.y;
