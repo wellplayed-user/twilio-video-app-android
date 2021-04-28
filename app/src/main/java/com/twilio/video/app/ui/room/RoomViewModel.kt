@@ -64,7 +64,6 @@ import com.twilio.video.app.ui.room.RoomViewEvent.ToggleLocalAudio
 import com.twilio.video.app.ui.room.RoomViewEvent.ToggleLocalVideo
 import com.twilio.video.app.ui.room.RoomViewEvent.VideoTrackRemoved
 import com.twilio.video.app.util.PermissionUtil
-import io.orcana.DataTrackLayer
 import io.orcana.OTWrapper
 import io.uniflow.androidx.flow.AndroidDataFlow
 import io.uniflow.core.flow.actionOn
@@ -79,6 +78,7 @@ class RoomViewModel(
     private val roomManager: RoomManager,
     private val audioSwitch: AudioSwitch,
     private val permissionUtil: PermissionUtil,
+    private val orcana: OTWrapper,
     val participantManager: ParticipantManager = ParticipantManager(),
     initialViewState: RoomViewState = RoomViewState(participantManager.primaryParticipant)
 ) : AndroidDataFlow(defaultState = initialViewState) {
@@ -183,8 +183,6 @@ class RoomViewModel(
             }
         }
     }
-
-    lateinit var orcana:OTWrapper
 
     private fun observeRoomEvents(roomEvent: RoomEvent) {
         Timber.d("observeRoomEvents: %s", roomEvent)
@@ -352,11 +350,12 @@ class RoomViewModel(
     class RoomViewModelFactory(
         private val roomManager: RoomManager,
         private val audioDeviceSelector: AudioSwitch,
-        private val permissionUtil: PermissionUtil
+        private val permissionUtil: PermissionUtil,
+        private val orcana: OTWrapper
     ) : ViewModelProvider.Factory {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return RoomViewModel(roomManager, audioDeviceSelector, permissionUtil) as T
+            return RoomViewModel(roomManager, audioDeviceSelector, permissionUtil, orcana) as T
         }
     }
 }

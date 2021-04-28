@@ -45,9 +45,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.twilio.audioswitch.AudioDevice
-import com.twilio.audioswitch.AudioDevice.BluetoothHeadset
-import com.twilio.audioswitch.AudioDevice.Speakerphone
-import com.twilio.audioswitch.AudioDevice.WiredHeadset
 import com.twilio.audioswitch.AudioSwitch
 import com.twilio.video.app.R
 import com.twilio.video.app.adapter.StatsListAdapter
@@ -62,28 +59,8 @@ import com.twilio.video.app.sdk.RoomManager
 import com.twilio.video.app.ui.login.CommunityLoginActivity
 import com.twilio.video.app.ui.room.RoomViewConfiguration.Connecting
 import com.twilio.video.app.ui.room.RoomViewConfiguration.Lobby
-import com.twilio.video.app.ui.room.RoomViewEffect.Connected
-import com.twilio.video.app.ui.room.RoomViewEffect.Disconnected
-import com.twilio.video.app.ui.room.RoomViewEffect.PermissionsDenied
-import com.twilio.video.app.ui.room.RoomViewEffect.ShowConnectFailureDialog
-import com.twilio.video.app.ui.room.RoomViewEffect.ShowMaxParticipantFailureDialog
-import com.twilio.video.app.ui.room.RoomViewEffect.ShowTokenErrorDialog
-import com.twilio.video.app.ui.room.RoomViewEvent.ActivateAudioDevice
-import com.twilio.video.app.ui.room.RoomViewEvent.Connect
-import com.twilio.video.app.ui.room.RoomViewEvent.DeactivateAudioDevice
-import com.twilio.video.app.ui.room.RoomViewEvent.DisableLocalAudio
-import com.twilio.video.app.ui.room.RoomViewEvent.DisableLocalVideo
-import com.twilio.video.app.ui.room.RoomViewEvent.Disconnect
-import com.twilio.video.app.ui.room.RoomViewEvent.EnableLocalAudio
-import com.twilio.video.app.ui.room.RoomViewEvent.EnableLocalVideo
-import com.twilio.video.app.ui.room.RoomViewEvent.OnPause
-import com.twilio.video.app.ui.room.RoomViewEvent.OnResume
-import com.twilio.video.app.ui.room.RoomViewEvent.SelectAudioDevice
-import com.twilio.video.app.ui.room.RoomViewEvent.StartScreenCapture
-import com.twilio.video.app.ui.room.RoomViewEvent.StopScreenCapture
-import com.twilio.video.app.ui.room.RoomViewEvent.SwitchCamera
-import com.twilio.video.app.ui.room.RoomViewEvent.ToggleLocalAudio
-import com.twilio.video.app.ui.room.RoomViewEvent.ToggleLocalVideo
+import com.twilio.video.app.ui.room.RoomViewEffect.*
+import com.twilio.video.app.ui.room.RoomViewEvent.*
 import com.twilio.video.app.ui.room.RoomViewModel.RoomViewModelFactory
 import com.twilio.video.app.ui.settings.SettingsActivity
 import com.twilio.video.app.util.InputUtils
@@ -91,8 +68,8 @@ import com.twilio.video.app.util.PermissionUtil
 import io.orcana.OTWrapper
 import io.uniflow.androidx.flow.onEvents
 import io.uniflow.androidx.flow.onStates
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 class RoomActivity : BaseActivity() {
     private lateinit var binding: RoomActivityBinding
@@ -127,6 +104,7 @@ class RoomActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = RoomActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.joinRoom.roomName.doOnTextChanged { text: CharSequence?, _, _, _ ->
@@ -136,8 +114,13 @@ class RoomActivity : BaseActivity() {
         binding.disconnect.setOnClickListener { disconnectButtonClick() }
         binding.localVideo.setOnClickListener { toggleLocalVideo() }
         binding.localAudio.setOnClickListener { toggleLocalAudio() }
-        val factory = RoomViewModelFactory(roomManager, audioSwitch, PermissionUtil(this))
+
+        // Orcana Addition
+        orcana = OTWrapper(this, binding, sharedPreferences)
+
+        val factory = RoomViewModelFactory(roomManager, audioSwitch, PermissionUtil(this), orcana)
         roomViewModel = ViewModelProvider(this, factory).get(RoomViewModel::class.java)
+
 
         // So calls can be answered when screen is locked
         window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
@@ -157,9 +140,6 @@ class RoomActivity : BaseActivity() {
         primaryParticipantController = PrimaryParticipantController(binding.room.primaryVideo)
 
         setupRecordingAnimation()
-
-        // Orcana Addition
-        orcana = OTWrapper(this, binding, sharedPreferences)
     }
 
     // Orcana addition
@@ -215,9 +195,9 @@ class RoomActivity : BaseActivity() {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<String>,
+            grantResults: IntArray
     ) {
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
             val recordAudioPermissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -296,9 +276,9 @@ class RoomActivity : BaseActivity() {
         if (requestCode == MEDIA_PROJECTION_REQUEST_CODE) {
             if (resultCode != RESULT_OK) {
                 Snackbar.make(
-                    binding.room.primaryVideo,
-                    R.string.screen_capture_permission_not_granted,
-                    BaseTransientBottomBar.LENGTH_LONG)
+                        binding.room.primaryVideo,
+                        R.string.screen_capture_permission_not_granted,
+                        BaseTransientBottomBar.LENGTH_LONG)
                     .show()
                 return
             }
@@ -653,10 +633,10 @@ class RoomActivity : BaseActivity() {
     }
 
     private fun createAudioDeviceDialog(
-        activity: Activity,
-        currentDevice: Int,
-        availableDevices: ArrayList<String>,
-        audioDeviceClickListener: DialogInterface.OnClickListener
+            activity: Activity,
+            currentDevice: Int,
+            availableDevices: ArrayList<String>,
+            audioDeviceClickListener: DialogInterface.OnClickListener
     ): AlertDialog {
         val builder = AlertDialog.Builder(activity, R.style.AppTheme_Dialog)
         builder.setTitle(activity.getString(R.string.room_screen_select_device))

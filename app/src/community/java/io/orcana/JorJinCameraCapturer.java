@@ -34,16 +34,16 @@ public class JorJinCameraCapturer implements VideoCapturer, FrameListener {
         this.cameraManager = new CameraManager(context);
         this.cameraManager.setCameraFrameListener(this);
 
-        CameraParameter cameraParameter = cameraManager.getCameraParameter();
-        cameraParameter.setAutoFocus(true);
-        cameraParameter.setBrightness(22);
-        cameraParameter.setContrast(43);
-        cameraParameter.setSharpness(14);
-        cameraParameter.setGamma(65);
-        cameraParameter.setHue(60);
-        cameraParameter.setSaturation(30);
-        cameraParameter.setPowerLineFrequency(CameraParameter.POWER_LINE_60HZ);
-        this.cameraManager.setCameraParameter(cameraParameter);
+//        CameraParameter cameraParameter = cameraManager.getCameraParameter();
+//        cameraParameter.setAutoFocus(true);
+//        cameraParameter.setBrightness(22);
+//        cameraParameter.setContrast(43);
+//        cameraParameter.setSharpness(14);
+//        cameraParameter.setGamma(65);
+//        cameraParameter.setHue(60);
+//        cameraParameter.setSaturation(30);
+//        cameraParameter.setPowerLineFrequency(CameraParameter.POWER_LINE_60HZ);
+//        this.cameraManager.setCameraParameter(cameraParameter);
 
         this.cameraManager.setResolutionIndex(ResolutionIndex);
         this.cameraManager.startCamera(CameraManager.COLOR_FORMAT_RGBA);
@@ -52,24 +52,6 @@ public class JorJinCameraCapturer implements VideoCapturer, FrameListener {
     @Override
     public void initialize(SurfaceTextureHelper surfaceTextureHelper, Context context, CapturerObserver capturerObserver) {
         this.capturerObserver = capturerObserver;
-    }
-
-    @Override
-    public VideoFormat getCaptureFormat() {
-        String[] var1 = this.cameraManager.getResolutionList()[ResolutionIndex].split("x");
-        int width = Integer.parseInt(var1[0]);
-        int height = Integer.parseInt(var1[1]);
-        VideoDimensions videoDimensions = new VideoDimensions(width, height);
-
-        int frameRate = this.cameraManager.getCameraParameter().getPowerLineFrequency();
-        return new VideoFormat(videoDimensions, frameRate);
-
-//        return new VideoFormat(VideoDimensions.HD_1080P_VIDEO_DIMENSIONS, 30);
-    }
-
-    @Override
-    public boolean isScreencast() {
-        return true;
     }
 
     @Override
@@ -117,6 +99,24 @@ public class JorJinCameraCapturer implements VideoCapturer, FrameListener {
             this.capturerObserver.onFrameCaptured(videoFrame);
             videoFrame.release();
         }
+    }
+
+    @Override
+    public VideoFormat getCaptureFormat() {
+        String[] var1 = this.cameraManager.getResolutionList()[ResolutionIndex].split("x");
+        int width = Integer.parseInt(var1[0]);
+        int height = Integer.parseInt(var1[1]);
+        VideoDimensions videoDimensions = new VideoDimensions(width, height);
+
+        int frameRate = this.cameraManager.getCameraParameter().getPowerLineFrequency();
+        return new VideoFormat(videoDimensions, frameRate);
+
+//        return new VideoFormat(VideoDimensions.HD_1080P_VIDEO_DIMENSIONS, 30);
+    }
+
+    @Override
+    public boolean isScreencast() {
+        return true;
     }
 
     private static Bitmap bitmapFromRgba(int width, int height, byte[] bytes) {

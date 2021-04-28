@@ -113,7 +113,11 @@ public class SensorManagerWrapper implements SensorEventListener, com.jorjin.jjs
     public void onSensorDataChanged(int type, float[] values, long timestamp) {
         if(type == com.jorjin.jjsdk.sensor.SensorManager.SENSOR_TYPE_GYROMETER_3D){
 //            Timber.d("Data[]: %f, %f, %f", values[0], values[1], values[2]);
-            sensorUpdate(values);
+            if(context instanceof Activity){
+                ((Activity)context).runOnUiThread(() -> sensorUpdate(values));
+            } else {
+                Timber.d("ACTIVITY IS NULL");
+            }
         }
     }
 

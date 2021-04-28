@@ -78,7 +78,6 @@ public class OTWrapper implements MotionMenu {
         setupUI(sharedPreferences);
 
         dataTrackLayer = new DataTrackLayer(this, roomActivity, binding);
-        roomActivity.getRoomViewModel().setOrcana(this);
 
         // Hack to connect to room without button clicks
         final Handler handler = new Handler(Looper.getMainLooper());
