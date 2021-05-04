@@ -20,6 +20,7 @@ import com.twilio.video.RemoteAudioTrack;
 import com.twilio.video.RemoteAudioTrackPublication;
 import com.twilio.video.RemoteParticipant;
 import com.twilio.video.Room;
+import com.twilio.video.app.BuildConfig;
 import com.twilio.video.app.R;
 import com.twilio.video.app.data.Preferences;
 import com.twilio.video.app.databinding.RoomActivityBinding;
@@ -30,7 +31,7 @@ import timber.log.Timber;
 
 public class OTWrapper implements MotionMenu {
     public static boolean production = true;
-    public static String version() {return "784260a" + (production ? "" : "-Staging");}
+    public static String version() {return BuildConfig.GitHash + (production ? "" : "-Staging");}
 
     private final RoomActivity roomActivity;
     private final RoomActivityBinding binding;

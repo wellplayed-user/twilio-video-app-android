@@ -9,6 +9,7 @@ public final class DeviceInfo {
     private static final String VuzixBrand = "vuzix";
     private static final String LenovoBrand = "Lenovo";
     private static final String SamsungBrand = "samsung";
+    private static final String GoogleBrand = "google";
 
     private DeviceInfo(){}
 
@@ -27,7 +28,7 @@ public final class DeviceInfo {
     public static boolean isTablet(){
         return !isHeadset();
     }
-    public static boolean isPhone(){ return is(SamsungBrand); }
+    public static boolean isPhone(){ return is(SamsungBrand) || is(GoogleBrand); }
 
     public static String brand() {
         Timber.d("Device Brand: %s ", Build.BRAND);
